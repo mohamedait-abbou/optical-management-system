@@ -1,0 +1,148 @@
+<x-app-layout>
+
+    <x-slot name="header">
+        <div class="flex items-center gap-4">
+            <a href="{{ route('users.index') }}" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5"></path>
+                    <path d="m12 19-7-7 7-7"></path>
+                </svg>
+            </a>
+            <div>
+                <h2 class="text-3xl font-bold text-slate-900">Nouvel Utilisateur</h2>
+                <p class="mt-1 text-slate-500">Créer un nouveau compte pour un membre de l'équipe</p>
+            </div>
+        </div>
+    </x-slot>
+
+    <div class="py-8">
+        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+
+                {{-- Header coloré --}}
+                <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-6">
+                    <div class="flex items-center gap-4">
+                        <div class="p-3 bg-white/20 backdrop-blur rounded-2xl">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="8.5" cy="7" r="4"></circle>
+                                <line x1="20" y1="8" x2="20" y2="14"></line>
+                                <line x1="23" y1="11" x2="17" y2="11"></line>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">Informations du compte</h3>
+                            <p class="text-indigo-100 text-sm">Remplissez les informations ci-dessous</p>
+                        </div>
+                    </div>
+                </div>
+
+                <form method="POST" action="{{ route('users.store') }}" class="p-8 space-y-6">
+                    @csrf
+
+                    {{-- Erreurs --}}
+                    @if($errors->any())
+                        <div class="bg-rose-50 border border-rose-200 text-rose-700 px-5 py-4 rounded-2xl">
+                            <div class="flex items-start gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                <ul class="list-disc list-inside text-sm space-y-1">
+                                    @foreach($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    @endif
+
+                    {{-- Name & Email --}}
+                    <div class="grid md:grid-cols-2 gap-5">
+                        <div>
+                            <label class="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                Nom complet <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="text" name="name" required value="{{ old('name') }}"
+                                class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition"
+                                placeholder="Jean Dupont">
+                        </div>
+
+                        <div>
+                            <label class="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                                Email <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="email" name="email" required value="{{ old('email') }}"
+                                class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition"
+                                placeholder="jean@exemple.com">
+                        </div>
+                    </div>
+
+                    {{-- Password --}}
+                    <div>
+                        <label class="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            Mot de passe <span class="text-rose-500">*</span>
+                        </label>
+                        <input type="password" name="password" required
+                            class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition"
+                            placeholder="••••••••">
+                        <p class="mt-1 text-xs text-slate-500">Minimum 8 caractères</p>
+                    </div>
+
+                    {{-- Role --}}
+                    <div>
+                        <label class="flex items-center gap-2 text-sm font-semibold text-slate-700 mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            Rôle <span class="text-rose-500">*</span>
+                        </label>
+                        <div class="grid md:grid-cols-3 gap-3">
+                            @foreach($roles as $role)
+                                <label class="relative cursor-pointer">
+                                    <input type="radio" name="role" value="{{ $role->name }}" class="peer sr-only" {{ old('role') == $role->name ? 'checked' : '' }}>
+                                    <div class="p-4 rounded-2xl border-2 border-slate-200 peer-checked:border-indigo-500 peer-checked:bg-indigo-50 transition">
+                                        <div class="flex items-center gap-3">
+                                            @if($role->name == 'Admin')
+                                                <div class="p-2 bg-rose-100 rounded-xl">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                                </div>
+                                            @elseif($role->name == 'Manager')
+                                                <div class="p-2 bg-blue-100 rounded-xl">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                                                </div>
+                                            @else
+                                                <div class="p-2 bg-emerald-100 rounded-xl">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                                </div>
+                                            @endif
+                                            <span class="font-semibold text-slate-900">{{ $role->name }}</span>
+                                        </div>
+                                    </div>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    {{-- Actions --}}
+                    <div class="flex items-center justify-end gap-3 pt-6 border-t border-slate-100">
+                        <a href="{{ route('users.index') }}"
+                            class="px-6 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition">
+                            Annuler
+                        </a>
+                        <button type="submit"
+                            class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-lg shadow-indigo-600/20 transition hover:scale-105">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                            </svg>
+                            Créer l'utilisateur
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+</x-app-layout>
