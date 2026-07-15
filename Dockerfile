@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     nodejs \
     npm \
-    && docker-php-ext-install pdo pdo_mysql zip \
+    && && docker-php-ext-install pdo pdo_pgsql zip  \
     && rm -rf /var/lib/apt/lists/*
 
 # Enable Apache Rewrite Module (Required for Laravel routing)
