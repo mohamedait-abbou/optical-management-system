@@ -6,6 +6,7 @@
 
 <div class="space-y-6">
     <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    
         <div>
             <p class="text-sm font-semibold uppercase tracking-[0.3em] text-brand-600">Client</p>
             <h2 class="text-3xl font-semibold text-slate-900">{{ $customer->first_name }} {{ $customer->last_name }}</h2>
@@ -78,6 +79,16 @@
             </div>
         </x-card>
     </div>
+
+    <!-- Bouton Historique Visuel -->
+<a href="{{ route('prescription-history.index', $customer) }}" 
+   class="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white font-semibold shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 transition hover:scale-105">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+        <circle cx="12" cy="12" r="3"/>
+    </svg>
+    Historique Visuel
+</a>
 
     <x-modal name="delete-customer">
         <div class="p-6">

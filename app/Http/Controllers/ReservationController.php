@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreReservationRequest;
-use App\Http\Requests\UpdateReservationRequest;
 use App\Models\Customer;
 use App\Models\Reservation;
+use App\Models\User;
+use App\Http\Requests\StoreReservationRequest;
+use App\Http\Requests\UpdateReservationRequest;
+use App\Notifications\NewReservationNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; // ✅ CETTE LIGNE ÉTAIT MANQUANTE
+
 
 class ReservationController extends Controller
 {
@@ -36,9 +40,13 @@ class ReservationController extends Controller
         return view('reservations.create', compact('customers', 'selectedCustomerId'));
     }
 
-    public function store(StoreReservationRequest $request)
+        public function store(StoreReservationRequest $request)
     {
-        Reservation::create($request->validated());
+        $reservation = Reservation::create($request->validated());
+
+        // ✅ MODIFICATION ICI : Notifie directement l'utilisateur connecté
+        $customerName = ($reservation->customer->first_name ?? '') . ' ' . ($reservation->customer->last_name ?? '');
+        Auth::user()->notify(new NewReservationNotification($customerName, $reservation->reservation_date->format('d/m/Y')));
 
         return redirect()->route('reservations.index')
             ->with('success', 'Réservation ajoutée avec succès.');
@@ -72,62 +80,45 @@ class ReservationController extends Controller
             ->with('success', 'Réservation supprimée avec succès.');
     }
 
-
     public function calendar()
-{
-    return view('reservations.calendar');
-}
-
-public function events()
-{
-    $reservations = Reservation::with('customer')->get();
-
-    $events = [];
-
-    foreach ($reservations as $reservation) {
-
-        switch ($reservation->status) {
-            case 'confirmed':
-                $color = '#10b981'; // Green
-                break;
-
-            case 'pending':
-                $color = '#f59e0b'; // Orange
-                break;
-
-            case 'completed':
-                $color = '#3b82f6'; // Blue
-                break;
-
-            case 'cancelled':
-                $color = '#ef4444'; // Red
-                break;
-
-            default:
-                $color = '#6366f1';
-        }
-
-        $events[] = [
-
-            'id' => $reservation->id,
-
-            'title' => optional($reservation->customer)->first_name . ' ' .
-                       optional($reservation->customer)->last_name,
-
-            'start' => $reservation->reservation_date->format('Y-m-d')
-                        . 'T' .
-                        $reservation->reservation_time,
-
-            'backgroundColor' => $color,
-
-            'borderColor' => $color,
-
-            'textColor' => '#ffffff',
-
-            'url' => route('reservations.show', $reservation),
-        ];
+    {
+        return view('reservations.calendar');
     }
 
-    return response()->json($events);
-}
+    public function events()
+    {
+        $reservations = Reservation::with('customer')->get();
+        $events = [];
+
+        foreach ($reservations as $reservation) {
+            switch ($reservation->status) {
+                case 'confirmed':
+                    $color = '#10b981'; // Green
+                    break;
+                case 'pending':
+                    $color = '#f59e0b'; // Orange
+                    break;
+                case 'completed':
+                    $color = '#3b82f6'; // Blue
+                    break;
+                case 'cancelled':
+                    $color = '#ef4444'; // Red
+                    break;
+                default:
+                    $color = '#6366f1';
+            }
+
+            $events[] = [
+                'id' => $reservation->id,
+                'title' => optional($reservation->customer)->first_name . ' ' . optional($reservation->customer)->last_name,
+                'start' => $reservation->reservation_date->format('Y-m-d') . 'T' . $reservation->reservation_time,
+                'backgroundColor' => $color,
+                'borderColor' => $color,
+                'textColor' => '#ffffff',
+                'url' => route('reservations.show', $reservation),
+            ];
+        }
+
+        return response()->json($events);
+    }
 }

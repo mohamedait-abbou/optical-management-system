@@ -1,12 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\Customer;
-use App\Models\OrderItem;   
+use App\Models\OrderItem;
+use App\Models\User;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
+use App\Notifications\NewOrderNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,15 +20,13 @@ class OrderController extends Controller
     {
         $search = $request->search;
 
-        $orders = Order::with('customer','user')
+        $orders = Order::with('customer', 'user')
             ->when($search, function ($query) use ($search) {
-
                 $query->where('order_number', 'like', "%{$search}%")
                       ->orWhereHas('customer', function ($q) use ($search) {
                           $q->where('first_name', 'like', "%{$search}%")
                             ->orWhere('last_name', 'like', "%{$search}%");
                       });
-
             })
             ->latest()
             ->paginate(10)
@@ -35,14 +36,14 @@ class OrderController extends Controller
     }
 
     public function create()
-{
-    $customers = Customer::orderBy('first_name')->get();
-    $products = Product::orderBy('name')->get();
+    {
+        $customers = Customer::orderBy('first_name')->get();
+        $products = Product::orderBy('name')->get();
 
-    return view('orders.create', compact('customers', 'products'));
-}
+        return view('orders.create', compact('customers', 'products'));
+    }
 
-    public function store(StoreOrderRequest $request)
+        public function store(StoreOrderRequest $request)
     {
         $order = Order::create([
             'customer_id' => $request->customer_id,
@@ -55,6 +56,10 @@ class OrderController extends Controller
         ]);
 
         $this->saveOrderItems($order, $request->products, $request->quantities);
+      
+        // ✅ MODIFICATION ICI : Notifie directement l'utilisateur connecté
+        $customerName = $order->customer ? ($order->customer->first_name . ' ' . $order->customer->last_name) : 'Client';
+        Auth::user()->notify(new NewOrderNotification($order->order_number, $customerName));
 
         return redirect()
             ->route('orders.index')
@@ -69,16 +74,12 @@ class OrderController extends Controller
     }
 
     public function edit(Order $order)
-{
-    $customers = Customer::orderBy('first_name')->get();
-    $products = Product::orderBy('name')->get();
+    {
+        $customers = Customer::orderBy('first_name')->get();
+        $products = Product::orderBy('name')->get();
 
-    return view('orders.edit', compact(
-        'order',
-        'customers',
-        'products'
-    ));
-}
+        return view('orders.edit', compact('order', 'customers', 'products'));
+    }
 
     public function update(UpdateOrderRequest $request, Order $order)
     {
@@ -109,10 +110,7 @@ class OrderController extends Controller
     {
         $order->items()->delete();
 
-        $products = Product::whereIn('id', $productIds)
-            ->get()
-            ->keyBy('id');
-
+        $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
         $totalAmount = 0;
 
         foreach ($productIds as $index => $productId) {

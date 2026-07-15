@@ -56,9 +56,9 @@ public function stockMovements()
     return $this->hasMany(StockMovement::class);
 }
 
-    // Relation à venir (Jour 6) :
-    // public function orderItems()
-    // {
-    //     return $this->hasMany(OrderItem::class);
-    // }
+public function purchaseOrderItems()
+{
+    return $this->hasMany(PurchaseOrderItem::class);
+}
+
 }

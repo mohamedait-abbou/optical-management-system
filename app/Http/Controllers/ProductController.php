@@ -9,6 +9,8 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
+use App\Notifications\LowStockNotification;
 
 class ProductController extends Controller
 {
@@ -51,6 +53,13 @@ class ProductController extends Controller
 
         Product::create($validated);
 
+        
+
+// Add this inside store() and update() methods, right before the return statement:
+if (isset($validated['quantity']) && isset($validated['alert_threshold']) && $validated['quantity'] <= $validated['alert_threshold']) {
+    User::role('Admin')->get()->each->notify(new LowStockNotification($validated['name'] ?? 'Produit', $validated['quantity']));
+}
+
         return redirect()->route('products.index')
             ->with('success', 'Produit ajouté avec succès.');
     }
@@ -80,6 +89,9 @@ class ProductController extends Controller
         }
 
         $product->update($validated);
+        if (isset($validated['quantity']) && isset($validated['alert_threshold']) && $validated['quantity'] <= $validated['alert_threshold']) {
+    User::role('Admin')->get()->each->notify(new LowStockNotification($validated['name'] ?? 'Produit', $validated['quantity']));
+}
 
         return redirect()->route('products.index')
             ->with('success', 'Produit modifié avec succès.');

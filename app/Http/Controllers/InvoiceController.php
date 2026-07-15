@@ -6,12 +6,10 @@ use App\Models\Invoice;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth; // ← Ajoutez cette ligne en haut
 
 class InvoiceController extends Controller
 {
-    /**
-     * Liste de toutes les factures générées.
-     */
     public function index(Request $request)
     {
         $search = $request->input('search');
@@ -31,12 +29,8 @@ class InvoiceController extends Controller
         return view('invoices.index', compact('invoices', 'search'));
     }
 
-    /**
-     * Générer une facture à partir d'une commande existante.
-     */
     public function store(Order $order)
     {
-        // Empêche de générer deux fois une facture pour la même commande
         if ($order->invoice) {
             return redirect()->route('invoices.show', $order->invoice)
                 ->with('error', 'Une facture existe déjà pour cette commande.');
@@ -59,19 +53,12 @@ class InvoiceController extends Controller
             ->with('success', 'Facture générée avec succès.');
     }
 
-    /**
-     * Afficher le détail d'une facture à l'écran.
-     */
     public function show(Invoice $invoice)
     {
         $invoice->load('order.customer', 'order.items.product');
-
         return view('invoices.show', compact('invoice'));
     }
 
-    /**
-     * Télécharger la facture au format PDF.
-     */
     public function downloadPdf(Invoice $invoice)
     {
         $invoice->load('order.customer', 'order.items.product');
@@ -82,11 +69,13 @@ class InvoiceController extends Controller
         return $pdf->download($invoice->invoice_number . '.pdf');
     }
 
-    /**
-     * Supprimer une facture (annulation).
-     */
     public function destroy(Invoice $invoice)
     {
+        // ✅ Utiliser Auth::user() au lieu de auth()->user()
+        if (!Auth::user()->hasAnyRole(['Admin', 'Manager'])) {
+            abort(403, 'Action non autorisée : Seuls les administrateurs et managers peuvent supprimer des factures.');
+        }
+
         $invoice->delete();
 
         return redirect()->route('invoices.index')

@@ -33,22 +33,32 @@ class CustomerController extends Controller
         return view('customers.create ');
     }
 
-    public function store(StoreCustomerRequest $request)
-    {
-        $customer = Customer::create($request->validated());
+    public function store(Request $request)
+{
+    $validated = $request->validate([
+        'first_name' => 'required|string|max:255',
+        'last_name' => 'required|string|max:255',
+        'phone' => 'nullable|string|max:20',
+        'email' => 'nullable|email|max:255',
+        'address' => 'nullable|string|max:500',
+        'date_of_birth' => 'nullable|date',
+    ]);
 
-        if ($request->wantsJson()) {
-            return response()->json(['customer' => $customer], 201);
-        }
+    $customer = Customer::create($validated);
 
-        return redirect()->route('customers.index')
-            ->with('success', 'Client ajouté avec succès.');
+    // Si on vient d'un formulaire de réservation (modal)
+    if ($request->has('redirect_to_reservation')) {
+        return redirect()->back()->with('success', 'Client créé avec succès!')->with('new_customer_id', $customer->id);
     }
+
+    return redirect()->route('customers.index')
+        ->with('success', 'Client créé avec succès!');
+}
 
     public function show(Customer $customer)
     {
         return view('customers.show', compact('customer'));
-    }
+    } 
 
     public function edit(Customer $customer)
     {
