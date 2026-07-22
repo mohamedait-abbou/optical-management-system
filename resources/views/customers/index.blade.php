@@ -58,7 +58,9 @@
                         <h3 class="text-xl font-semibold text-slate-900">Aucun client trouvé</h3>
                         <p class="mt-2 text-sm text-slate-500">Essayez de modifier vos critères de recherche ou ajoutez un nouveau client.</p>
                     </div>
-                    <a href="{{ route('customers.create') }}" class="inline-flex items-center justify-center rounded-2xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-700">Ajouter un client</a>
+                            @can('customers.create')
+                            <a href="{{ route('customers.create') }}" class="inline-flex items-center justify-center rounded-2xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-700">Ajouter un client</a>
+                            @endcan
                 </div>
             </x-card>
         @else
@@ -73,11 +75,15 @@
                             </div>
                             <x-status-badge variant="info">Client</x-status-badge>
                         </div>
-                        <div class="mt-4 flex flex-wrap gap-2 text-sm">
-                            <a href="{{ route('customers.show', $customer) }}" class="text-brand-600 hover:text-brand-700">Voir</a>
-                            <a href="{{ route('customers.edit', $customer) }}" class="text-slate-600 hover:text-slate-900">Modifier</a>
-                            <button type="button" class="text-rose-600 hover:text-rose-700" @click="deleteId = {{ $customer->id }}; $dispatch('open-modal', { detail: 'delete-customer' })">Supprimer</button>
-                        </div>
+                                    <div class="flex flex-wrap gap-2">
+                                        <a href="{{ route('customers.show', $customer) }}" class="text-brand-600 hover:text-brand-700">Voir</a>
+                                        @can('customers.edit')
+                                        <a href="{{ route('customers.edit', $customer) }}" class="text-slate-600 hover:text-slate-900">Modifier</a>
+                                        @endcan
+                                        @can('customers.delete')
+                                        <button type="button" class="text-rose-600 hover:text-rose-700" @click="deleteId = {{ $customer->id }}; $dispatch('open-modal', { detail: 'delete-customer' })">Supprimer</button>
+                                        @endcan
+                                    </div>
                     </x-card>
                 @endforeach
             </div>

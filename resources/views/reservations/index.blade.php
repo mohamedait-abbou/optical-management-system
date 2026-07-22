@@ -20,12 +20,14 @@
 
     </a>
 
+    @can('reservations.create')
     <a href="{{ route('reservations.create') }}"
        class="inline-flex items-center justify-center rounded-2xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white hover:bg-brand-700">
 
         Nouvelle réservation
 
     </a>
+    @endcan
 
 </div>
     </div>

@@ -7,10 +7,12 @@
             <p class="text-sm font-semibold uppercase tracking-wider text-indigo-600">Gestion</p>
             <h2 class="text-3xl font-bold text-slate-900">Fournisseurs</h2>
         </div>
+        @can('suppliers.create')
         <a href="{{ route('suppliers.create') }}" class="btn-premium inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 hover:bg-indigo-700">
             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
             Nouveau fournisseur
         </a>
+        @endcan
     </div>
 
     <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">

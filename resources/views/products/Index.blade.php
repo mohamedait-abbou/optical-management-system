@@ -12,12 +12,14 @@
             <h2 class="text-3xl font-semibold text-slate-900">Gestion des produits</h2>
             <p class="mt-2 text-sm text-slate-500">Consultez, recherchez et gérez votre inventaire de montures et accessoires.</p>
         </div>
+        @can('products.create')
         <a href="{{ route('products.create') }}" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition hover:bg-indigo-700 hover:scale-[1.02]">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 5v14M5 12h14"/>
             </svg>
             Ajouter un produit
         </a>
+        @endcan
     </div>
 
     @if (session('success'))

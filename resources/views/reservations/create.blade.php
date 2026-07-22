@@ -21,16 +21,48 @@
             <div class="grid gap-6 sm:grid-cols-2">
                 <div>
                     <x-input-label for="customer_id" value="Client" />
-                    <div class="mt-2 flex gap-2">
-                        <select id="customer_id" name="customer_id" class="flex-1 rounded-xl border border-slate-300 px-4 py-3">
-                            <option value="">Sélectionnez un client</option>
-                            @foreach($customers as $customer)
-                                <option value="{{ $customer->id }}" {{ old('customer_id', $selectedCustomerId ?? '') == $customer->id ? 'selected' : '' }}>
-                                    {{ $customer->first_name }} {{ $customer->last_name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        <button type="button" onclick="openNewCustomerModal()"
+                    <div x-data="customerSearch()" x-cloak class="mt-2 flex gap-2">
+                        <div class="relative flex-1">
+                            <input 
+                                x-model="search"
+                                @input="filterCustomers()"
+                                @focus="open = true"
+                                @blur="setTimeout(() => { open = false }, 150)"
+                                @keydown.escape="open = false"
+                                :value="selectedCustomerName"
+                                placeholder="Rechercher un client..."
+                                class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition"
+                            />
+                            
+                            <!-- Hidden input pour stocker l'ID du client -->
+                            <input type="hidden" name="customer_id" :value="selectedCustomerId">
+                            
+                            <!-- Dropdown -->
+                            <div x-show="open" @click.away="open = false" class="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-300 rounded-xl shadow-lg z-10 max-h-64 overflow-y-auto">
+                                <template x-if="filteredCustomers.length > 0">
+                                    <div>
+                                        <template x-for="customer in filteredCustomers" :key="customer.id">
+                                            <button 
+                                                type="button"
+                                                @click="selectCustomer(customer)"
+                                                class="w-full text-left px-4 py-3 hover:bg-indigo-50 transition border-b border-slate-100 last:border-b-0"
+                                            >
+                                                <div class="font-semibold text-slate-900" x-text="customer.first_name + ' ' + customer.last_name"></div>
+                                                <div class="text-sm text-slate-500" x-show="customer.phone" x-text="customer.phone"></div>
+                                            </button>
+                                        </template>
+                                    </div>
+                                </template>
+                                
+                                <template x-if="filteredCustomers.length === 0 && search.length > 0">
+                                    <div class="px-4 py-6 text-center text-slate-500">
+                                        Aucun client trouvé
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                        
+                        <button type="button" @click="openNewCustomerModal()"
                             class="inline-flex items-center justify-center rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-100 whitespace-nowrap">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M12 5v14M5 12h14"/>
@@ -201,6 +233,50 @@ function openNewCustomerModal() {
 
 function closeNewCustomerModal() {
     document.getElementById('newCustomerModal').classList.add('hidden');
+}
+
+function customerSearch() {
+    return {
+        allCustomers: @json($customers ?? []),
+        filteredCustomers: [],
+        search: '',
+        open: false,
+        selectedCustomerId: @json(old('customer_id') ?? request()->get('customer_id') ?? ''),
+        selectedCustomerName: '',
+        
+        init() {
+            this.filteredCustomers = this.allCustomers;
+            // Pré-remplir le nom du client si une sélection existe
+            if (this.selectedCustomerId) {
+                const customer = this.allCustomers.find(c => c.id == this.selectedCustomerId);
+                if (customer) {
+                    this.selectedCustomerName = customer.first_name + ' ' + customer.last_name;
+                    this.search = this.selectedCustomerName;
+                }
+            }
+        },
+        
+        filterCustomers() {
+            if (this.search.trim() === '') {
+                this.filteredCustomers = this.allCustomers;
+            } else {
+                const term = this.search.toLowerCase();
+                this.filteredCustomers = this.allCustomers.filter(customer => {
+                    const fullName = (customer.first_name + ' ' + customer.last_name).toLowerCase();
+                    const phone = (customer.phone || '').toLowerCase();
+                    return fullName.includes(term) || phone.includes(term);
+                });
+            }
+        },
+        
+        selectCustomer(customer) {
+            this.selectedCustomerId = customer.id;
+            this.selectedCustomerName = customer.first_name + ' ' + customer.last_name;
+            this.search = this.selectedCustomerName;
+            this.open = false;
+            this.filteredCustomers = this.allCustomers;
+        }
+    }
 }
 </script>
 

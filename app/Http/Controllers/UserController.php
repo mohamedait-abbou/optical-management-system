@@ -5,10 +5,35 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    /**
+     * Group all permissions by module (before first dot)
+     */
+    private function groupedPermissions()
+    {
+        $permissions = Permission::all()->pluck('name');
+        $grouped = [];
+
+        foreach ($permissions as $permission) {
+            $module = explode('.', $permission)[0];
+            if (!isset($grouped[$module])) {
+                $grouped[$module] = [];
+            }
+            $grouped[$module][] = $permission;
+        }
+
+        ksort($grouped);
+        foreach ($grouped as &$perms) {
+            sort($perms);
+        }
+
+        return $grouped;
+    }
+
     /**
      * Display all staff
      */
@@ -26,8 +51,9 @@ class UserController extends Controller
     public function create()
     {
         $roles = Role::all();
+        $groupedPermissions = $this->groupedPermissions();
 
-        return view('users.create', compact('roles'));
+        return view('users.create', compact('roles', 'groupedPermissions'));
     }
 
 
@@ -39,7 +65,8 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:8',
+            'password' => 'required|min:8|confirmed',
+            'password_confirmation' => 'required',
             'role' => 'required|exists:roles,name',
         ]);
 
@@ -54,6 +81,9 @@ class UserController extends Controller
         // assign role
         $user->assignRole($request->role);
 
+        // sync permissions directly on user
+        $user->syncPermissions($request->permissions ?? []);
+
 
         return redirect()
             ->route('users.index')
@@ -67,8 +97,10 @@ class UserController extends Controller
     public function edit(User $user)
     {
         $roles = Role::all();
+        $groupedPermissions = $this->groupedPermissions();
+        $userPermissions = $user->getDirectPermissions()->pluck('name')->toArray();
 
-        return view('users.edit',compact('user','roles'));
+        return view('users.edit', compact('user', 'roles', 'groupedPermissions', 'userPermissions'));
     }
 
 
@@ -78,7 +110,6 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-
         $request->validate([
             'name'=>'required',
             'email'=>'required|email',
@@ -91,8 +122,15 @@ class UserController extends Controller
             'email'=>$request->email,
         ]);
 
+        if ($request->filled('password')) {
+            $request->validate(['password' => 'min:8']);
+            $user->update(['password' => Hash::make($request->password)]);
+        }
 
         $user->syncRoles([$request->role]);
+        
+        // sync permissions directly on user
+        $user->syncPermissions($request->permissions ?? []);
 
 
         return redirect()

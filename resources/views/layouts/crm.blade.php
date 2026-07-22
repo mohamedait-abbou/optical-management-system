@@ -152,19 +152,13 @@
                             Factures
                         </a>
 
-                        <a href="#" 
-                           onclick="event.preventDefault(); alert('🚀 Module Rapports & Analyses : En cours de développement !')"
-                           class="group flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-medium transition-all duration-150 text-slate-300 hover:bg-white/5 hover:text-white cursor-pointer">
-                            <div class="flex items-center gap-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>
-                                </svg>
-                                Rapports & Analyses
-                            </div>
-                            <span class="text-[10px] font-bold uppercase tracking-wider bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-500/30">
-                                Bientôt
-                            </span>
-                        </a>
+                                        <a href="{{ route('reports.index') }}"
+                class="group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition-all duration-150 {{ request()->routeIs('reports.*') ? 'bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow-lg shadow-indigo-900/30' : 'text-slate-300 hover:bg-white/5 hover:text-white' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>
+                    </svg>
+                    Rapports & Analyses
+                </a>
 
                         @role('Admin')
                             <a href="{{ route('users.index') }}"

@@ -5,7 +5,6 @@
 @section('content')
 
 @php
-    // Define variables at the very top so they are available everywhere
     $stats = [
         'customers' => $customersCount ?? 0,
         'products' => $productsCount ?? 0,
@@ -123,7 +122,7 @@
 <div class="premium-bg space-y-8">
     
     <!-- ========================================== -->
-    <!-- HERO SECTION -->
+    <!-- 1. HERO SECTION -->
     <!-- ========================================== -->
     <div class="relative overflow-hidden rounded-3xl glass-card p-8 md:p-10 shadow-2xl animate-fade-in-up">
         <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-indigo-500/20 to-violet-500/20 rounded-full blur-3xl animate-pulse-glow"></div>
@@ -157,7 +156,7 @@
                     </div>
                 </div>
                 
-                <!-- Quick Stats in Hero (FIXED: Added DH) -->
+                <!-- Quick Stats in Hero -->
                 <div class="grid grid-cols-2 gap-3 lg:gap-4">
                     <div class="glass-card rounded-2xl p-4 border border-white/50 shadow-lg">
                         <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Revenu</p>
@@ -175,7 +174,45 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- STATISTICS CARDS (6 Cards) -->
+    <!-- 2. QUICK ACTIONS (Moved to Top) -->
+    <!-- ========================================== -->
+    <div class="grid gap-4 sm:grid-cols-3 animate-fade-in-up delay-200">
+        <a href="{{ route('customers.create') }}" class="btn-premium group flex items-center gap-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 p-5 text-white shadow-lg shadow-indigo-500/20 transition hover:scale-[1.02]">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+            </div>
+            <div class="flex-1">
+                <p class="font-bold text-lg">Nouveau client</p>
+                <p class="text-xs text-white/80">Ajouter un client au CRM</p>
+            </div>
+            <svg class="h-6 w-6 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+
+        <a href="{{ route('orders.create') }}" class="btn-premium group flex items-center gap-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 p-5 text-white shadow-lg shadow-cyan-500/20 transition hover:scale-[1.02]">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+            </div>
+            <div class="flex-1">
+                <p class="font-bold text-lg">Nouvelle commande</p>
+                <p class="text-xs text-white/80">Créer une vente rapide</p>
+            </div>
+            <svg class="h-6 w-6 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+
+        <a href="{{ route('products.create') }}" class="btn-premium group flex items-center gap-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 p-5 text-white shadow-lg shadow-emerald-500/20 transition hover:scale-[1.02]">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            </div>
+            <div class="flex-1">
+                <p class="font-bold text-lg">Nouveau produit</p>
+                <p class="text-xs text-white/80">Ajouter au catalogue</p>
+            </div>
+            <svg class="h-6 w-6 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 3. STATISTICS CARDS (6 Cards) -->
     <!-- ========================================== -->
     <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         @php
@@ -218,55 +255,39 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- CHARTS SECTION (ALL 3 CHARTS RESTORED) -->
+    <!-- 4. CHARTS SECTION (Only 2 Charts Now) -->
     <!-- ========================================== -->
-    <div class="space-y-6">
-        <!-- Row 1: Sales (Wide) + Orders (Narrow) -->
-        <div class="grid gap-6 lg:grid-cols-3">
-            <!-- Chart 1: Ventes -->
-            <div class="scroll-reveal relative overflow-hidden rounded-3xl glass-card p-6 shadow-xl lg:col-span-2">
-                <div class="flex items-center justify-between mb-6">
-                    <div>
-                        <h3 class="text-lg font-bold text-slate-900">Évolution des ventes</h3>
-                        <p class="text-sm text-slate-500">Chiffre d'affaires sur les 12 derniers mois</p>
-                    </div>
-                    <span class="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">+18% ce mois</span>
+    <div class="grid gap-6 lg:grid-cols-3">
+        <!-- Chart 1: Ventes (Wide) -->
+        <div class="scroll-reveal relative overflow-hidden rounded-3xl glass-card p-6 shadow-xl lg:col-span-2">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900">Évolution des ventes</h3>
+                    <p class="text-sm text-slate-500">Chiffre d'affaires sur les 12 derniers mois</p>
                 </div>
-                <div class="relative h-72">
-                    <canvas id="salesChart"></canvas>
-                </div>
+                <span class="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">+18% ce mois</span>
             </div>
-
-            <!-- Chart 2: Commandes -->
-            <div class="scroll-reveal relative overflow-hidden rounded-3xl glass-card p-6 shadow-xl">
-                <div class="flex items-center justify-between mb-6">
-                    <div>
-                        <h3 class="text-lg font-bold text-slate-900">Volume de commandes</h3>
-                        <p class="text-sm text-slate-500">Nombre de commandes par mois</p>
-                    </div>
-                </div>
-                <div class="relative h-72">
-                    <canvas id="ordersChart"></canvas>
-                </div>
+            <div class="relative h-72">
+                <canvas id="salesChart"></canvas>
             </div>
         </div>
 
-        <!-- Row 2: Stock par marque (Full Width) -->
+        <!-- Chart 2: Commandes (Narrow) -->
         <div class="scroll-reveal relative overflow-hidden rounded-3xl glass-card p-6 shadow-xl">
             <div class="flex items-center justify-between mb-6">
                 <div>
-                    <h3 class="text-lg font-bold text-slate-900">Stock par marque</h3>
-                    <p class="text-sm text-slate-500">Répartition de l'inventaire par fabricant</p>
+                    <h3 class="text-lg font-bold text-slate-900">Volume</h3>
+                    <p class="text-sm text-slate-500">Commandes par mois</p>
                 </div>
             </div>
             <div class="relative h-72">
-                <canvas id="stockBrandChart"></canvas>
+                <canvas id="ordersChart"></canvas>
             </div>
         </div>
     </div>
 
     <!-- ========================================== -->
-    <!-- BOTTOM GRID: Activity & Sidebar -->
+    <!-- 5. BOTTOM GRID: Activity & Low Stock -->
     <!-- ========================================== -->
     <div class="grid gap-6 xl:grid-cols-3">
         <!-- Recent Activity Timeline -->
@@ -314,52 +335,29 @@
             </div>
         </div>
 
-        <!-- Sidebar: Quick Actions & Low Stock -->
-        <div class="space-y-6">
-            <!-- Quick Actions -->
-            <div class="scroll-reveal relative overflow-hidden rounded-3xl glass-card p-6 shadow-xl">
-                <div class="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-indigo-500/20 to-violet-500/20 rounded-full blur-3xl"></div>
-                <div class="relative">
-                    <h3 class="text-lg font-bold text-slate-900 mb-4">Actions rapides</h3>
-                    <div class="space-y-3">
-                        <a href="{{ route('customers.create') }}" class="btn-premium group flex items-center gap-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 p-4 text-white shadow-lg shadow-indigo-500/30">
-                            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm"><svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg></div>
-                            <div class="flex-1"><p class="font-semibold">Nouveau client</p></div>
-                            <svg class="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        </a>
-                        <a href="{{ route('orders.create') }}" class="btn-premium group flex items-center gap-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 p-4 text-white shadow-lg shadow-cyan-500/30">
-                            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm"><svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg></div>
-                            <div class="flex-1"><p class="font-semibold">Nouvelle commande</p></div>
-                            <svg class="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        </a>
-                    </div>
-                </div>
+        <!-- Low Stock Alerts -->
+        <div class="scroll-reveal relative overflow-hidden rounded-3xl glass-card p-6 shadow-xl">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-slate-900">Stock faible</h3>
+                <span class="inline-flex items-center rounded-full bg-rose-50 px-2 py-1 text-xs font-semibold text-rose-700 border border-rose-200">{{ count($lowStockProducts) }} alertes</span>
             </div>
-
-            <!-- Low Stock Alerts -->
-            <div class="scroll-reveal relative overflow-hidden rounded-3xl glass-card p-6 shadow-xl">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-bold text-slate-900">Stock faible</h3>
-                    <span class="inline-flex items-center rounded-full bg-rose-50 px-2 py-1 text-xs font-semibold text-rose-700 border border-rose-200">{{ count($lowStockProducts) }} alertes</span>
-                </div>
-                <div class="space-y-3">
-                    @forelse($lowStockProducts as $product)
-                        <div class="group flex items-center gap-4 p-3 rounded-2xl border border-rose-100 bg-gradient-to-r from-rose-50/50 to-white transition-all hover:shadow-lg hover:border-rose-200 hover:-translate-y-0.5">
-                            <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-rose-500 to-pink-600 text-white shadow-lg shadow-rose-500/30">
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-semibold text-slate-900 truncate">{{ $product['name'] }}</p>
-                                <p class="text-xs text-rose-600 font-medium mt-0.5">Reste: {{ $product['quantity'] }} unités</p>
-                            </div>
+            <div class="space-y-3">
+                @forelse($lowStockProducts as $product)
+                    <div class="group flex items-center gap-4 p-3 rounded-2xl border border-rose-100 bg-gradient-to-r from-rose-50/50 to-white transition-all hover:shadow-lg hover:border-rose-200 hover:-translate-y-0.5">
+                        <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-rose-500 to-pink-600 text-white shadow-lg shadow-rose-500/30">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                         </div>
-                    @empty
-                        <div class="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-4 text-center">
-                            <p class="text-sm font-semibold text-emerald-900">Tout va bien !</p>
-                            <p class="text-xs text-emerald-600 mt-1">Aucun produit en rupture</p>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold text-slate-900 truncate">{{ $product['name'] }}</p>
+                            <p class="text-xs text-rose-600 font-medium mt-0.5">Reste: {{ $product['quantity'] }} unités</p>
                         </div>
-                    @endforelse
-                </div>
+                    </div>
+                @empty
+                    <div class="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-4 text-center">
+                        <p class="text-sm font-semibold text-emerald-900">Tout va bien !</p>
+                        <p class="text-xs text-emerald-600 mt-1">Aucun produit en rupture</p>
+                    </div>
+                @endforelse
             </div>
         </div>
     </div>
@@ -407,9 +405,6 @@
     const salesData = @json($salesData ?? []);
     const ordersLabels = @json($ordersLabels ?? []);
     const ordersData = @json($ordersData ?? []);
-    const stockByBrandRaw = @json($stockByBrand ?? []);
-    const stockBrandLabels = stockByBrandRaw.map(item => item.brand);
-    const stockBrandDataValues = stockByBrandRaw.map(item => item.stock);
 
     // Chart 1: Sales
     if (document.getElementById('salesChart') && salesLabels.length) {
@@ -432,15 +427,6 @@
         new Chart(document.getElementById('ordersChart'), {
             type: 'bar',
             data: { labels: ordersLabels, datasets: [{ label: 'Commandes', data: ordersData, backgroundColor: 'rgba(56, 189, 248, 0.8)', borderRadius: 8, barThickness: 'flex' }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 11 } } }, y: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b', font: { size: 11 } } } } }
-        });
-    }
-
-    // Chart 3: Stock by Brand
-    if (document.getElementById('stockBrandChart') && stockBrandLabels.length) {
-        new Chart(document.getElementById('stockBrandChart'), {
-            type: 'bar',
-            data: { labels: stockBrandLabels, datasets: [{ label: 'Quantité en stock', data: stockBrandDataValues, backgroundColor: 'rgba(139, 92, 246, 0.8)', borderRadius: 8, barThickness: 'flex' }] },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 11 } } }, y: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b', font: { size: 11 } } } } }
         });
     }
