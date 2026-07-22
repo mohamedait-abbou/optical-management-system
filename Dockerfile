@@ -1,33 +1,31 @@
 FROM php:8.5-apache
 
-# Install system dependencies required by Laravel & Vite
+WORKDIR /var/www/html
+
+RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/*.conf
+
 RUN apt-get update && apt-get install -y \
-    unzip \
     git \
+    unzip \
     curl \
     libzip-dev \
     nodejs \
-    npm \
-    && docker-php-ext-install pdo pdo_pgsql zip \
-    && rm -rf /var/lib/apt/lists/*
+    npm
 
-# Enable Apache Rewrite Module
-RUN a2enmod rewrite
-
-WORKDIR /var/www/html
+RUN docker-php-ext-install pdo pdo_mysql zip
 
 COPY . .
 
-# Install Composer
 RUN curl -sS https://getcomposer.org/installer | php \
     && mv composer.phar /usr/local/bin/composer
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+RUN composer install
 
-# Permissions
-RUN chown -R www-data:www-data storage bootstrap/cache \
-    && chmod -R 775 storage bootstrap/cache
+RUN npm install
+
+RUN npm run build
+
+RUN a2enmod rewrite
 
 EXPOSE 80
 
