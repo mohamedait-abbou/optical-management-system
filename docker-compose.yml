@@ -17,10 +17,10 @@ services:
     container_name: optical-mysql
 
     environment:
-      MYSQL_DATABASE: optical_crm
-      MYSQL_USER: crm_user
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: root
+    MYSQL_DATABASE: ${DB_DATABASE}
+    MYSQL_USER: ${DB_USERNAME}
+    MYSQL_PASSWORD: ${DB_PASSWORD}
+    MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
 
     ports:
       - "3306:3306"
