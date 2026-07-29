@@ -62,6 +62,6 @@ class BrandController extends Controller
 
         return redirect()
             ->route('brands.index')
-            ->with('success','Brand deleted successfully.');
+            ->with('success', 'Brand deleted successfully.');
     }
 }

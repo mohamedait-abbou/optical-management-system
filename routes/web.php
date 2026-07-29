@@ -21,8 +21,6 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
- // 👈 Make sure this is here!
-
 Route::get('/', function () {
     return view('welcome');
 });
