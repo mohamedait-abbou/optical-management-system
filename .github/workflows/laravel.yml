@@ -114,10 +114,34 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Create .env for Docker build
+      - name: Create .env for production
         run: |
-          cp .env.example .env
-          sed -i "s/APP_KEY=.*/APP_KEY=$(openssl rand -base64 32)/" .env
+          cat > .env << EOF
+APP_NAME=Optical CRM
+APP_ENV=production
+APP_KEY=$(openssl rand -base64 32)
+APP_DEBUG=false
+APP_URL=http://localhost
+
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=optical_crm
+DB_USERNAME=optical_user
+DB_PASSWORD=$(openssl rand -base64 16)
+DB_ROOT_PASSWORD=$(openssl rand -base64 16)
+
+SESSION_DRIVER=database
+SESSION_LIFETIME=120
+BROADCAST_CONNECTION=log
+FILESYSTEM_DISK=local
+QUEUE_CONNECTION=database
+
+CACHE_STORE=database
+LOG_CHANNEL=stack
+LOG_LEVEL=warning
+MAIL_MAILER=log
+EOF
 
       - name: Build and deploy Docker containers
         run: |
