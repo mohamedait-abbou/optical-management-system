@@ -157,9 +157,11 @@ jobs:
             echo "WARNING: .env was created. Update DB_PASSWORD and DB_ROOT_PASSWORD for security."
           fi
 
-          # Generate APP_KEY if empty
-          if grep -q '^APP_KEY=$' .env; then
-            php artisan key:generate 2>/dev/null || true
+          # Generate APP_KEY if empty (no PHP on host, use openssl)
+          if grep -q '^APP_KEY=$' .env || grep -q '^APP_KEY=""$' .env; then
+            NEW_KEY="base64:$(openssl rand -base64 32)"
+            sed -i "s|^APP_KEY=.*|APP_KEY=$NEW_KEY|" .env
+            echo "Generated APP_KEY"
           fi
 
           # Stop existing containers
