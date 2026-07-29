@@ -1,9 +1,5 @@
 services:
   app:
-    restart: always
-    ports:
-      - "8000:80"
-    volumes: []
     deploy:
       resources:
         limits:
@@ -11,7 +7,6 @@ services:
           memory: 512M
 
   mysql:
-    restart: always
     deploy:
       resources:
         limits:

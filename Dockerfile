@@ -1,31 +1,33 @@
 FROM php:8.5-apache
 
-WORKDIR /var/www/html
-
-RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/*.conf
-
+# System dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
     curl \
     libzip-dev \
-    nodejs \
-    npm
+    libpng-dev \
+    libxml2-dev \
+    libonig-dev \
+    && docker-php-ext-install -j$(nproc) \
+        pdo \
+        pdo_mysql \
+        zip \
+        bcmath \
+        gd \
+        xml \
+        mbstring \
+    && a2enmod rewrite \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN docker-php-ext-install pdo pdo_mysql zip
+# Fix composer git operations on self-hosted runner
+RUN git config --global --add safe.directory '*'
 
+WORKDIR /var/www/html
+
+# Copy pre-built application (vendor, node_modules, built assets all included)
 COPY . .
-
-RUN curl -sS https://getcomposer.org/installer | php \
-    && mv composer.phar /usr/local/bin/composer
-
-RUN composer install
-
-RUN npm install
-
-RUN npm run build
-
-RUN a2enmod rewrite
 
 EXPOSE 80
 

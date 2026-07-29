@@ -4,29 +4,48 @@ services:
     build:
       context: .
     container_name: optical-crm
+    restart: always
+    env_file:
+      - .env
+    environment:
+      APP_ENV: production
+      APP_DEBUG: false
     ports:
       - "8000:80"
-    volumes:
-      - .:/var/www/html
+    volumes: []
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
+    networks:
+      - optical-network
 
   mysql:
-    image: mysql:8
+    image: mysql:8.0
     container_name: optical-mysql
-    
-    # Notice the indentation here (2 spaces in)
+    restart: always
+    env_file:
+      - .env
     environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-
+      MYSQL_DATABASE: ${DB_DATABASE:-optical_crm}
+      MYSQL_USER: ${DB_USERNAME:-optical_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_secret}
     ports:
       - "3306:3306"
-
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - optical-network
 
 volumes:
   mysql_data:
+
+networks:
+  optical-network:
+    driver: bridge

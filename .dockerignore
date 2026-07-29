@@ -1,0 +1,16 @@
+.git
+.gitignore
+.env
+.dockerignore
+Dockerfile
+docker-compose*.yml
+node_modules
+vendor
+storage/logs/*
+storage/debugbar/*
+bootstrap/cache/*
+public/hot
+public/storage
+.editorconfig
+.php_cs*
+*.md
