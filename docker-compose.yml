@@ -20,7 +20,7 @@ services:
       - optical-network
 
   mysql:
-    image: mysql:8.0
+    image: mysql:8
     container_name: optical-mysql
     restart: always
     env_file:
