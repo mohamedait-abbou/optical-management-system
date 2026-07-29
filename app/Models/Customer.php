@@ -2,27 +2,41 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Customer extends Model
 {
-   protected $fillable = [
+    use HasFactory;
+
+    protected $fillable = [
         'first_name',
-        'last_name',        'cin',        'phone',
+        'last_name',
+        'cin',
+        'phone',
         'email',
         'address',
         'birth_date',
         'gender',
         'notes',
     ];
+
+    public function setGenderAttribute($value)
+    {
+        $this->attributes['gender'] = match ($value) {
+            'Male' => 'M',
+            'Female' => 'F',
+            default => $value,
+        };
+    }
+
     public function prescriptions()
-{
-    return $this->hasMany(Prescription::class);
-}
+    {
+        return $this->hasMany(Prescription::class);
+    }
 
-
-public function orders()
-{
-    return $this->hasMany(Order::class);
-}
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

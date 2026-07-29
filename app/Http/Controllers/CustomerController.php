@@ -35,16 +35,9 @@ class CustomerController extends Controller
         return view('customers.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreCustomerRequest $request)
 {
-    $validated = $request->validate([
-        'first_name' => 'required|string|max:255',
-        'last_name' => 'required|string|max:255',
-        'phone' => 'nullable|string|max:20',
-        'email' => 'nullable|email|max:255',
-        'address' => 'nullable|string|max:500',
-        'date_of_birth' => 'nullable|date',
-    ]);
+    $validated = $request->validated();
 
     $customer = Customer::create($validated);
 

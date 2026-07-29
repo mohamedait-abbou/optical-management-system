@@ -29,7 +29,7 @@ class StoreCustomerRequest extends FormRequest
             'email' => ['nullable', 'string', 'email', 'max:255'],
             'address' => ['nullable', 'string', 'max:1000'],
             'birth_date' => ['nullable', 'date'],
-            'gender' => ['nullable', 'in:Male,Female'],
+            'gender' => ['nullable', 'in:Male,Female,M,F'],
             'notes' => ['nullable', 'string', 'max:2000'],
         ];
     }

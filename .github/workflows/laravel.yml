@@ -2,14 +2,13 @@ name: Laravel CI/CD
 
 on:
   push:
-    branches:
-      - main
-      - master
-
+    branches: [main, master]
   pull_request:
-    branches:
-      - main
-      - master
+    branches: [main, master]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   tests:
@@ -30,20 +29,31 @@ jobs:
           --health-retries=5
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: "8.5"
-          extensions: mbstring, pdo, pdo_mysql
+          extensions: mbstring, pdo, pdo_mysql, xml, curl, zip, gd
           coverage: none
+          tools: composer:v2
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
 
       - name: Copy .env
         run: cp .env.example .env
 
-      - name: Configure Environment
+      - name: Configure MySQL for tests
         run: |
           echo "APP_ENV=testing" >> .env
           echo "DB_CONNECTION=mysql" >> .env
@@ -53,21 +63,32 @@ jobs:
           echo "DB_USERNAME=root" >> .env
           echo "DB_PASSWORD=root" >> .env
 
-      - name: Install Composer Dependencies
-        run: composer install --no-interaction --prefer-dist
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
 
-      - name: Generate Application Key
+      - name: Generate application key
         run: php artisan key:generate
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "20"
 
-      - name: Install Node Dependencies
-        run: npm install
+      - name: Get npm cache directory
+        id: npm-cache
+        run: echo "dir=$(npm config get cache)" >> $GITHUB_OUTPUT
 
-      - name: Build Frontend Assets
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.npm-cache.outputs.dir }}
+          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: ${{ runner.os }}-npm-
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build frontend assets
         run: npm run build
 
       - name: Wait for MySQL
@@ -76,22 +97,21 @@ jobs:
             sleep 2
           done
 
-      - name: Run Database Migrations
+      - name: Run database migrations
         run: php artisan migrate --force
 
-      - name: Run Tests
+      - name: Run Pint (Laravel coding style)
+        run: vendor/bin/pint --test
+
+      - name: Run tests with Pest
         run: php artisan test
 
   deploy:
     needs: tests
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref_name == 'main'
     runs-on: self-hosted
 
     steps:
-      - name: Deploy Application
+      - name: Deploy application
         run: |
-          cd /home/mhd/CRM_optical
-          git pull origin main
-          docker compose up -d --build
-          docker compose exec -T app php artisan migrate --force
-          docker compose exec -T app php artisan optimize
+          bash /opt/optical-crm/deploy.sh
