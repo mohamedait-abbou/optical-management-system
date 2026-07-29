@@ -1,4 +1,4 @@
-name: Laravel CI
+git commit -m "Add CD using self-hosted runner"name: Laravel CI
 
 on:
   push:
