@@ -1,6 +1,5 @@
 FROM php:8.5-apache
 
-# System dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -21,13 +20,26 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Fix composer git operations on self-hosted runner
 RUN git config --global --add safe.directory '*'
+
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /var/www/html
 
-# Copy pre-built application (vendor, node_modules, built assets all included)
+COPY composer.json composer.lock ./
+RUN composer install --no-interaction --prefer-dist --no-progress
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
 COPY . .
+
+RUN npm run build
+
+RUN rm -rf node_modules
 
 EXPOSE 80
 

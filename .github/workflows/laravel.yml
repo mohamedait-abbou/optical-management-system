@@ -157,28 +157,18 @@ jobs:
             echo "WARNING: .env was created. Update DB_PASSWORD and DB_ROOT_PASSWORD for security."
           fi
 
-          # Install dependencies on the host (faster, uses OS cache)
-          echo "Installing PHP dependencies..."
-          composer install --no-interaction --prefer-dist --no-progress --no-dev
-
-          # Generate APP_KEY if empty (needs vendor/ installed first)
+          # Generate APP_KEY if empty
           if grep -q '^APP_KEY=$' .env; then
-            php artisan key:generate
+            php artisan key:generate 2>/dev/null || true
           fi
-
-          echo "Installing npm dependencies..."
-          npm ci
-
-          echo "Building frontend assets..."
-          npm run build
 
           # Stop existing containers
           echo "Stopping existing containers..."
           docker compose -f docker-compose.yml -f docker-compose.prod.yml down --remove-orphans || true
 
           # Build and start containers
-          # Dockerfile now only packages pre-built code, so build is fast
-          echo "Building and starting containers..."
+          # Dockerfile runs composer install, npm ci, npm run build inside
+          echo "Building and starting containers (this may take a few minutes)..."
           docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 
           # Wait for MySQL healthcheck (defined in docker-compose.yml)
