@@ -119,9 +119,9 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center justify-end gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
-                                        <a href="{{ route('prescriptions.show', $prescription) }}" class="p-2 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition" title="Voir">
+                                        <button type="button" @click="$store.detailModal.openUrl('{{ route('prescriptions.card', $prescription) }}')" class="p-2 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition" title="Voir">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                                        </a>
+                                        </button>
                                         
                                         @can('prescriptions.edit')
                                         <a href="{{ route('prescriptions.edit', $prescription) }}" class="p-2 rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 transition" title="Modifier">

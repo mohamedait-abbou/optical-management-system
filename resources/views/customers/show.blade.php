@@ -80,15 +80,51 @@
         </x-card>
     </div>
 
-    <!-- Bouton Historique Visuel -->
-<a href="{{ route('prescription-history.index', $customer) }}" 
-   class="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white font-semibold shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 transition hover:scale-105">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
-        <circle cx="12" cy="12" r="3"/>
-    </svg>
-    Historique Visuel
-</a>
+    <div class="flex flex-wrap gap-3">
+    <a href="{{ route('prescription-history.index', $customer) }}" 
+       class="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white font-semibold shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/40 transition hover:scale-105">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+            <circle cx="12" cy="12" r="3"/>
+        </svg>
+        Historique Visuel
+    </a>
+    <button type="button" @click="$dispatch('open-modal', { detail: 'notify-customer' })"
+       class="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition hover:scale-105">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+        </svg>
+        Envoyer un email
+    </button>
+    </div>
+
+    <x-modal name="notify-customer">
+        <form action="{{ route('customers.notify-email', $customer) }}" method="POST" class="p-6 space-y-4">
+            @csrf
+            <h2 class="text-lg font-semibold text-slate-900">Envoyer un email à {{ $customer->first_name }} {{ $customer->last_name }}</h2>
+            @if($customer->email)
+            <div>
+                <label class="text-sm font-medium text-slate-700">Destinataire</label>
+                <p class="text-slate-500">{{ $customer->email }}</p>
+            </div>
+            @else
+            <p class="text-sm text-amber-600 bg-amber-50 rounded-xl p-3">Cet client n'a pas d'adresse email renseignée.</p>
+            @endif
+            <div>
+                <label for="subject" class="text-sm font-medium text-slate-700">Sujet</label>
+                <input type="text" name="subject" id="subject" required class="mt-1 block w-full rounded-xl border-slate-200 bg-slate-50 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Ex: Rappel de rendez-vous">
+            </div>
+            <div>
+                <label for="message" class="text-sm font-medium text-slate-700">Message</label>
+                <textarea name="message" id="message" rows="5" required class="mt-1 block w-full rounded-xl border-slate-200 bg-slate-50 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Votre message..."></textarea>
+            </div>
+            <div class="flex justify-end gap-3">
+                <button type="button" @click="$dispatch('close-modal', { detail: 'notify-customer' })" class="px-4 py-2 rounded-xl text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 transition">Annuler</button>
+                <button type="submit" class="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-lg transition">Envoyer</button>
+            </div>
+        </form>
+    </x-modal>
 
     <x-modal name="delete-customer">
         <div class="p-6">

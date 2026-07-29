@@ -368,7 +368,7 @@
                         </div>
                         <span class="text-lg font-bold text-white">Optical CRM</span>
                     </div>
-                    <p class="text-slate-400 text-sm">© {{ date('Y') }} Optical CRM. Tous droits réservés.</p>
+                    <p class="text-slate-400 text-sm">© {{ date('Y') }} Optical CRM. Tous droits réservés. ci/cd  </p>
                 </div>
             </div>
         </footer>
@@ -386,5 +386,6 @@
             });
         });
     </script>
+    
 </body>
 </html>

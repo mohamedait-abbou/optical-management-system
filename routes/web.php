@@ -40,143 +40,153 @@ Route::middleware('auth')->group(function () {
 
     // ========== CUSTOMERS ==========
     Route::prefix('customers')->name('customers.')->group(function () {
-        Route::get('/', [CustomerController::class, 'index'])->name('index')->middleware('permission:customers.view|role:Admin');
-        Route::get('/create', [CustomerController::class, 'create'])->name('create')->middleware('permission:customers.create|role:Admin');
-        Route::post('/', [CustomerController::class, 'store'])->name('store')->middleware('permission:customers.create|role:Admin');
-        Route::get('/{customer}', [CustomerController::class, 'show'])->name('show')->middleware('permission:customers.view|role:Admin');
-        Route::get('/{customer}/edit', [CustomerController::class, 'edit'])->name('edit')->middleware('permission:customers.edit|role:Admin');
-        Route::put('/{customer}', [CustomerController::class, 'update'])->name('update')->middleware('permission:customers.edit|role:Admin');
-        Route::delete('/{customer}', [CustomerController::class, 'destroy'])->name('destroy')->middleware('permission:customers.delete|role:Admin');
-        
-        // Prescription History
-        Route::get('/{customer}/prescription-history', [PrescriptionHistoryController::class, 'index'])->name('prescription-history.index')->middleware('permission:customers.view|role:Admin');
-        Route::get('/customers/{customer}/prescription-history/api/evolution', [PrescriptionHistoryController::class, 'getEvolution'])->name('prescription-history.api.evolution')->middleware('permission:customers.view|role:Admin');
-        Route::get('/{customer}/prescription-history/create', [PrescriptionHistoryController::class, 'create'])->name('prescription-history.create')->middleware('permission:customers.edit|role:Admin');
-        Route::post('/{customer}/prescription-history', [PrescriptionHistoryController::class, 'store'])->name('prescription-history.store')->middleware('permission:customers.edit|role:Admin');
-        Route::get('/{customer}/prescription-history/{prescription}/edit', [PrescriptionHistoryController::class, 'edit'])->name('prescription-history.edit')->middleware('permission:customers.edit|role:Admin');
-        Route::put('/{customer}/prescription-history/{prescription}', [PrescriptionHistoryController::class, 'update'])->name('prescription-history.update')->middleware('permission:customers.edit|role:Admin');
-        Route::delete('/{customer}/prescription-history/{prescription}', [PrescriptionHistoryController::class, 'destroy'])->name('prescription-history.destroy')->middleware('permission:customers.delete|role:Admin');
+        Route::get('/', [CustomerController::class, 'index'])->name('index')->middleware('role_or_permission:customers.view|Admin');
+        Route::get('/create', [CustomerController::class, 'create'])->name('create')->middleware('role_or_permission:customers.create|Admin');
+        Route::post('/', [CustomerController::class, 'store'])->name('store')->middleware('role_or_permission:customers.create|Admin');
+        Route::get('/{customer}', [CustomerController::class, 'show'])->name('show')->middleware('role_or_permission:customers.view|Admin');
+        Route::get('/{customer}/card', [CustomerController::class, 'card'])->name('card')->middleware('role_or_permission:customers.view|Admin');
+        Route::get('/{customer}/edit', [CustomerController::class, 'edit'])->name('edit')->middleware('role_or_permission:customers.edit|Admin');
+        Route::put('/{customer}', [CustomerController::class, 'update'])->name('update')->middleware('role_or_permission:customers.edit|Admin');
+        Route::delete('/{customer}', [CustomerController::class, 'destroy'])->name('destroy')->middleware('role_or_permission:customers.delete|Admin');
+        Route::post('/{customer}/notify-email', [CustomerController::class, 'notifyEmail'])->name('notify-email')->middleware('role_or_permission:customers.edit|Admin');
+    });
+
+    // Prescription History (separate group so route names are prescription-history.*, not customers.prescription-history.*)
+    Route::prefix('customers')->name('prescription-history.')->group(function () {
+        Route::get('/{customer}/prescription-history', [PrescriptionHistoryController::class, 'index'])->name('index')->middleware('role_or_permission:customers.view|Admin');
+        Route::get('/customers/{customer}/prescription-history/api/evolution', [PrescriptionHistoryController::class, 'getEvolution'])->name('api.evolution')->middleware('role_or_permission:customers.view|Admin');
+        Route::get('/{customer}/prescription-history/create', [PrescriptionHistoryController::class, 'create'])->name('create')->middleware('role_or_permission:customers.edit|Admin');
+        Route::post('/{customer}/prescription-history', [PrescriptionHistoryController::class, 'store'])->name('store')->middleware('role_or_permission:customers.edit|Admin');
+        Route::get('/{customer}/prescription-history/{prescription}/edit', [PrescriptionHistoryController::class, 'edit'])->name('edit')->middleware('role_or_permission:customers.edit|Admin');
+        Route::put('/{customer}/prescription-history/{prescription}', [PrescriptionHistoryController::class, 'update'])->name('update')->middleware('role_or_permission:customers.edit|Admin');
+        Route::delete('/{customer}/prescription-history/{prescription}', [PrescriptionHistoryController::class, 'destroy'])->name('destroy')->middleware('role_or_permission:customers.delete|Admin');
     });
 
     // ========== ORDERS ==========
     Route::prefix('orders')->name('orders.')->group(function () {
-        Route::get('/', [OrderController::class, 'index'])->name('index')->middleware('permission:orders.view|role:Admin');
-        Route::get('/create', [OrderController::class, 'create'])->name('create')->middleware('permission:orders.create|role:Admin');
-        Route::post('/', [OrderController::class, 'store'])->name('store')->middleware('permission:orders.create|role:Admin');
-        Route::get('/{order}', [OrderController::class, 'show'])->name('show')->middleware('permission:orders.view|role:Admin');
-        Route::get('/{order}/edit', [OrderController::class, 'edit'])->name('edit')->middleware('permission:orders.edit|role:Admin');
-        Route::put('/{order}', [OrderController::class, 'update'])->name('update')->middleware('permission:orders.edit|role:Admin');
-        Route::delete('/{order}', [OrderController::class, 'destroy'])->name('destroy')->middleware('permission:orders.delete|role:Admin');
+        Route::get('/', [OrderController::class, 'index'])->name('index')->middleware('role_or_permission:orders.view|Admin');
+        Route::get('/create', [OrderController::class, 'create'])->name('create')->middleware('role_or_permission:orders.create|Admin');
+        Route::post('/', [OrderController::class, 'store'])->name('store')->middleware('role_or_permission:orders.create|Admin');
+        Route::get('/{order}', [OrderController::class, 'show'])->name('show')->middleware('role_or_permission:orders.view|Admin');
+        Route::get('/{order}/card', [OrderController::class, 'card'])->name('card')->middleware('role_or_permission:orders.view|Admin');
+        Route::get('/{order}/edit', [OrderController::class, 'edit'])->name('edit')->middleware('role_or_permission:orders.edit|Admin');
+        Route::put('/{order}', [OrderController::class, 'update'])->name('update')->middleware('role_or_permission:orders.edit|Admin');
+        Route::delete('/{order}', [OrderController::class, 'destroy'])->name('destroy')->middleware('role_or_permission:orders.delete|Admin');
     });
 
     // ========== PRODUCTS ==========
     Route::prefix('products')->name('products.')->group(function () {
-        Route::get('/', [ProductController::class, 'index'])->name('index')->middleware('permission:products.view|role:Admin');
-        Route::get('/create', [ProductController::class, 'create'])->name('create')->middleware('permission:products.create|role:Admin');
-        Route::post('/', [ProductController::class, 'store'])->name('store')->middleware('permission:products.create|role:Admin');
-        Route::get('/{product}', [ProductController::class, 'show'])->name('show')->middleware('permission:products.view|role:Admin');
-        Route::get('/{product}/edit', [ProductController::class, 'edit'])->name('edit')->middleware('permission:products.edit|role:Admin');
-        Route::put('/{product}', [ProductController::class, 'update'])->name('update')->middleware('permission:products.edit|role:Admin');
-        Route::delete('/{product}', [ProductController::class, 'destroy'])->name('destroy')->middleware('permission:products.delete|role:Admin');
+        Route::get('/', [ProductController::class, 'index'])->name('index')->middleware('role_or_permission:products.view|Admin');
+        Route::get('/create', [ProductController::class, 'create'])->name('create')->middleware('role_or_permission:products.create|Admin');
+        Route::post('/', [ProductController::class, 'store'])->name('store')->middleware('role_or_permission:products.create|Admin');
+        Route::get('/{product}', [ProductController::class, 'show'])->name('show')->middleware('role_or_permission:products.view|Admin');
+        Route::get('/{product}/card', [ProductController::class, 'card'])->name('card')->middleware('role_or_permission:products.view|Admin');
+        Route::get('/{product}/edit', [ProductController::class, 'edit'])->name('edit')->middleware('role_or_permission:products.edit|Admin');
+        Route::put('/{product}', [ProductController::class, 'update'])->name('update')->middleware('role_or_permission:products.edit|Admin');
+        Route::delete('/{product}', [ProductController::class, 'destroy'])->name('destroy')->middleware('role_or_permission:products.delete|Admin');
     });
 
     // ========== PRESCRIPTIONS ==========
     Route::prefix('prescriptions')->name('prescriptions.')->group(function () {
-        Route::get('/', [PrescriptionController::class, 'index'])->name('index')->middleware('permission:prescriptions.view|role:Admin');
-        Route::get('/create', [PrescriptionController::class, 'create'])->name('create')->middleware('permission:prescriptions.create|role:Admin');
-        Route::post('/', [PrescriptionController::class, 'store'])->name('store')->middleware('permission:prescriptions.create|role:Admin');
-        Route::get('/{prescription}', [PrescriptionController::class, 'show'])->name('show')->middleware('permission:prescriptions.view|role:Admin');
-        Route::get('/{prescription}/edit', [PrescriptionController::class, 'edit'])->name('edit')->middleware('permission:prescriptions.edit|role:Admin');
-        Route::put('/{prescription}', [PrescriptionController::class, 'update'])->name('update')->middleware('permission:prescriptions.edit|role:Admin');
-        Route::delete('/{prescription}', [PrescriptionController::class, 'destroy'])->name('destroy')->middleware('permission:prescriptions.delete|role:Admin');
+        Route::get('/', [PrescriptionController::class, 'index'])->name('index')->middleware('role_or_permission:prescriptions.view|Admin');
+        Route::get('/create', [PrescriptionController::class, 'create'])->name('create')->middleware('role_or_permission:prescriptions.create|Admin');
+        Route::post('/', [PrescriptionController::class, 'store'])->name('store')->middleware('role_or_permission:prescriptions.create|Admin');
+        Route::get('/{prescription}', [PrescriptionController::class, 'show'])->name('show')->middleware('role_or_permission:prescriptions.view|Admin');
+        Route::get('/{prescription}/card', [PrescriptionController::class, 'card'])->name('card')->middleware('role_or_permission:prescriptions.view|Admin');
+        Route::get('/{prescription}/edit', [PrescriptionController::class, 'edit'])->name('edit')->middleware('role_or_permission:prescriptions.edit|Admin');
+        Route::put('/{prescription}', [PrescriptionController::class, 'update'])->name('update')->middleware('role_or_permission:prescriptions.edit|Admin');
+        Route::delete('/{prescription}', [PrescriptionController::class, 'destroy'])->name('destroy')->middleware('role_or_permission:prescriptions.delete|Admin');
     });
 
     // ========== RESERVATIONS ==========
     Route::prefix('reservations')->name('reservations.')->group(function () {
-        Route::get('/', [ReservationController::class, 'index'])->name('index')->middleware('permission:reservations.view|role:Admin');
-        Route::get('/calendar', [ReservationController::class, 'calendar'])->name('calendar')->middleware('permission:reservations.view|role:Admin');
-        Route::get('/events', [ReservationController::class, 'events'])->name('events')->middleware('permission:reservations.view|role:Admin');
-        Route::get('/create', [ReservationController::class, 'create'])->name('create')->middleware('permission:reservations.create|role:Admin');
-        Route::post('/', [ReservationController::class, 'store'])->name('store')->middleware('permission:reservations.create|role:Admin');
-        Route::get('/{reservation}', [ReservationController::class, 'show'])->name('show')->middleware('permission:reservations.view|role:Admin');
-        Route::get('/{reservation}/edit', [ReservationController::class, 'edit'])->name('edit')->middleware('permission:reservations.edit|role:Admin');
-        Route::put('/{reservation}', [ReservationController::class, 'update'])->name('update')->middleware('permission:reservations.edit|role:Admin');
-        Route::delete('/{reservation}', [ReservationController::class, 'destroy'])->name('destroy')->middleware('permission:reservations.delete|role:Admin');
+        Route::get('/', [ReservationController::class, 'index'])->name('index')->middleware('role_or_permission:reservations.view|Admin');
+        Route::get('/calendar', [ReservationController::class, 'calendar'])->name('calendar')->middleware('role_or_permission:reservations.view|Admin');
+        Route::get('/events', [ReservationController::class, 'events'])->name('events')->middleware('role_or_permission:reservations.view|Admin');
+        Route::get('/create', [ReservationController::class, 'create'])->name('create')->middleware('role_or_permission:reservations.create|Admin');
+        Route::post('/', [ReservationController::class, 'store'])->name('store')->middleware('role_or_permission:reservations.create|Admin');
+        Route::get('/{reservation}', [ReservationController::class, 'show'])->name('show')->middleware('role_or_permission:reservations.view|Admin');
+        Route::get('/{reservation}/card', [ReservationController::class, 'card'])->name('card')->middleware('role_or_permission:reservations.view|Admin');
+        Route::get('/{reservation}/edit', [ReservationController::class, 'edit'])->name('edit')->middleware('role_or_permission:reservations.edit|Admin');
+        Route::put('/{reservation}', [ReservationController::class, 'update'])->name('update')->middleware('role_or_permission:reservations.edit|Admin');
+        Route::delete('/{reservation}', [ReservationController::class, 'destroy'])->name('destroy')->middleware('role_or_permission:reservations.delete|Admin');
     });
 
     // ========== STOCK MOVEMENTS ==========
     Route::prefix('stock-movements')->name('stock-movements.')->group(function () {
-        Route::get('/', [StockMovementController::class, 'index'])->name('index')->middleware('permission:stock-movements.view|role:Admin');
-        Route::get('/create', [StockMovementController::class, 'create'])->name('create')->middleware('permission:stock-movements.create|role:Admin');
-        Route::post('/', [StockMovementController::class, 'store'])->name('store')->middleware('permission:stock-movements.create|role:Admin');
-        Route::get('/{stockMovement}', [StockMovementController::class, 'show'])->name('show')->middleware('permission:stock-movements.view|role:Admin');
-        Route::get('/{stockMovement}/edit', [StockMovementController::class, 'edit'])->name('edit')->middleware('permission:stock-movements.edit|role:Admin');
-        Route::put('/{stockMovement}', [StockMovementController::class, 'update'])->name('update')->middleware('permission:stock-movements.edit|role:Admin');
-        Route::delete('/{stockMovement}', [StockMovementController::class, 'destroy'])->name('destroy')->middleware('permission:stock-movements.delete|role:Admin');
+        Route::get('/', [StockMovementController::class, 'index'])->name('index')->middleware('role_or_permission:stock-movements.view|Admin');
+        Route::get('/create', [StockMovementController::class, 'create'])->name('create')->middleware('role_or_permission:stock-movements.create|Admin');
+        Route::post('/', [StockMovementController::class, 'store'])->name('store')->middleware('role_or_permission:stock-movements.create|Admin');
+        Route::get('/{stockMovement}', [StockMovementController::class, 'show'])->name('show')->middleware('role_or_permission:stock-movements.view|Admin');
+        Route::get('/{stockMovement}/card', [StockMovementController::class, 'card'])->name('card')->middleware('role_or_permission:stock-movements.view|Admin');
+        Route::get('/{stockMovement}/edit', [StockMovementController::class, 'edit'])->name('edit')->middleware('role_or_permission:stock-movements.edit|Admin');
+        Route::put('/{stockMovement}', [StockMovementController::class, 'update'])->name('update')->middleware('role_or_permission:stock-movements.edit|Admin');
+        Route::delete('/{stockMovement}', [StockMovementController::class, 'destroy'])->name('destroy')->middleware('role_or_permission:stock-movements.delete|Admin');
     });
 
     // ========== BRANDS ==========
     Route::prefix('brands')->name('brands.')->group(function () {
-        Route::get('/', [BrandController::class, 'index'])->name('index')->middleware('permission:brands.view|role:Admin');
-        Route::get('/create', [BrandController::class, 'create'])->name('create')->middleware('permission:brands.create|role:Admin');
-        Route::post('/', [BrandController::class, 'store'])->name('store')->middleware('permission:brands.create|role:Admin');
-        Route::get('/{brand}', [BrandController::class, 'show'])->name('show')->middleware('permission:brands.view|role:Admin');
-        Route::get('/{brand}/edit', [BrandController::class, 'edit'])->name('edit')->middleware('permission:brands.edit|role:Admin');
-        Route::put('/{brand}', [BrandController::class, 'update'])->name('update')->middleware('permission:brands.edit|role:Admin');
-        Route::delete('/{brand}', [BrandController::class, 'destroy'])->name('destroy')->middleware('permission:brands.delete|role:Admin');
+        Route::get('/', [BrandController::class, 'index'])->name('index')->middleware('role_or_permission:brands.view|Admin');
+        Route::get('/create', [BrandController::class, 'create'])->name('create')->middleware('role_or_permission:brands.create|Admin');
+        Route::post('/', [BrandController::class, 'store'])->name('store')->middleware('role_or_permission:brands.create|Admin');
+        Route::get('/{brand}', [BrandController::class, 'show'])->name('show')->middleware('role_or_permission:brands.view|Admin');
+        Route::get('/{brand}/edit', [BrandController::class, 'edit'])->name('edit')->middleware('role_or_permission:brands.edit|Admin');
+        Route::put('/{brand}', [BrandController::class, 'update'])->name('update')->middleware('role_or_permission:brands.edit|Admin');
+        Route::delete('/{brand}', [BrandController::class, 'destroy'])->name('destroy')->middleware('role_or_permission:brands.delete|Admin');
     });
 
     // ========== CATEGORIES ==========
     Route::prefix('categories')->name('categories.')->group(function () {
-        Route::get('/', [CategoryController::class, 'index'])->name('index')->middleware('permission:categories.view|role:Admin');
-        Route::get('/create', [CategoryController::class, 'create'])->name('create')->middleware('permission:categories.create|role:Admin');
-        Route::post('/', [CategoryController::class, 'store'])->name('store')->middleware('permission:categories.create|role:Admin');
-        Route::get('/{category}', [CategoryController::class, 'show'])->name('show')->middleware('permission:categories.view|role:Admin');
-        Route::get('/{category}/edit', [CategoryController::class, 'edit'])->name('edit')->middleware('permission:categories.edit|role:Admin');
-        Route::put('/{category}', [CategoryController::class, 'update'])->name('update')->middleware('permission:categories.edit|role:Admin');
-        Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('destroy')->middleware('permission:categories.delete|role:Admin');
+        Route::get('/', [CategoryController::class, 'index'])->name('index')->middleware('role_or_permission:categories.view|Admin');
+        Route::get('/create', [CategoryController::class, 'create'])->name('create')->middleware('role_or_permission:categories.create|Admin');
+        Route::post('/', [CategoryController::class, 'store'])->name('store')->middleware('role_or_permission:categories.create|Admin');
+        Route::get('/{category}', [CategoryController::class, 'show'])->name('show')->middleware('role_or_permission:categories.view|Admin');
+        Route::get('/{category}/edit', [CategoryController::class, 'edit'])->name('edit')->middleware('role_or_permission:categories.edit|Admin');
+        Route::put('/{category}', [CategoryController::class, 'update'])->name('update')->middleware('role_or_permission:categories.edit|Admin');
+        Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('destroy')->middleware('role_or_permission:categories.delete|Admin');
     });
 
     // ========== SUPPLIERS ==========
     Route::prefix('suppliers')->name('suppliers.')->group(function () {
-        Route::get('/', [SupplierController::class, 'index'])->name('index')->middleware('permission:suppliers.view|role:Admin');
-        Route::get('/create', [SupplierController::class, 'create'])->name('create')->middleware('permission:suppliers.create|role:Admin');
-        Route::post('/', [SupplierController::class, 'store'])->name('store')->middleware('permission:suppliers.create|role:Admin');
-        Route::get('/{supplier}', [SupplierController::class, 'show'])->name('show')->middleware('permission:suppliers.view|role:Admin');
-        Route::get('/{supplier}/edit', [SupplierController::class, 'edit'])->name('edit')->middleware('permission:suppliers.edit|role:Admin');
-        Route::put('/{supplier}', [SupplierController::class, 'update'])->name('update')->middleware('permission:suppliers.edit|role:Admin');
-        Route::delete('/{supplier}', [SupplierController::class, 'destroy'])->name('destroy')->middleware('permission:suppliers.delete|role:Admin');
+        Route::get('/', [SupplierController::class, 'index'])->name('index')->middleware('role_or_permission:suppliers.view|Admin');
+        Route::get('/create', [SupplierController::class, 'create'])->name('create')->middleware('role_or_permission:suppliers.create|Admin');
+        Route::post('/', [SupplierController::class, 'store'])->name('store')->middleware('role_or_permission:suppliers.create|Admin');
+        Route::get('/{supplier}', [SupplierController::class, 'show'])->name('show')->middleware('role_or_permission:suppliers.view|Admin');
+        Route::get('/{supplier}/edit', [SupplierController::class, 'edit'])->name('edit')->middleware('role_or_permission:suppliers.edit|Admin');
+        Route::put('/{supplier}', [SupplierController::class, 'update'])->name('update')->middleware('role_or_permission:suppliers.edit|Admin');
+        Route::delete('/{supplier}', [SupplierController::class, 'destroy'])->name('destroy')->middleware('role_or_permission:suppliers.delete|Admin');
     });
 
         // Reports & Analytics
-Route::get('/reports', [ReportController::class, 'index'])->name('reports.index')->middleware('permission:view-reports|role:Admin');
+Route::get('/reports', [ReportController::class, 'index'])->name('reports.index')->middleware('role_or_permission:view-reports|Admin');
 
     // ========== PURCHASE ORDERS ==========
     Route::prefix('purchase-orders')->name('purchase-orders.')->group(function () {
-        Route::get('/', [PurchaseOrderController::class, 'index'])->name('index')->middleware('permission:purchase-orders.view|role:Admin');
-        Route::get('/create', [PurchaseOrderController::class, 'create'])->name('create')->middleware('permission:purchase-orders.create|role:Admin');
-        Route::post('/', [PurchaseOrderController::class, 'store'])->name('store')->middleware('permission:purchase-orders.create|role:Admin');
-        Route::get('/{purchaseOrder}', [PurchaseOrderController::class, 'show'])->name('show')->middleware('permission:purchase-orders.view|role:Admin');
-        Route::get('/{purchaseOrder}/edit', [PurchaseOrderController::class, 'edit'])->name('edit')->middleware('permission:purchase-orders.edit|role:Admin');
-        Route::put('/{purchaseOrder}', [PurchaseOrderController::class, 'update'])->name('update')->middleware('permission:purchase-orders.edit|role:Admin');
-        Route::post('/{purchaseOrder}/receive', [PurchaseOrderController::class, 'receive'])->name('receive')->middleware('permission:purchase-orders.edit|role:Admin');
-        Route::delete('/{purchaseOrder}', [PurchaseOrderController::class, 'destroy'])->name('destroy')->middleware('permission:purchase-orders.delete|role:Admin');
+        Route::get('/', [PurchaseOrderController::class, 'index'])->name('index')->middleware('role_or_permission:purchase-orders.view|Admin');
+        Route::get('/create', [PurchaseOrderController::class, 'create'])->name('create')->middleware('role_or_permission:purchase-orders.create|Admin');
+        Route::post('/', [PurchaseOrderController::class, 'store'])->name('store')->middleware('role_or_permission:purchase-orders.create|Admin');
+        Route::get('/{purchaseOrder}', [PurchaseOrderController::class, 'show'])->name('show')->middleware('role_or_permission:purchase-orders.view|Admin');
+        Route::get('/{purchaseOrder}/edit', [PurchaseOrderController::class, 'edit'])->name('edit')->middleware('role_or_permission:purchase-orders.edit|Admin');
+        Route::put('/{purchaseOrder}', [PurchaseOrderController::class, 'update'])->name('update')->middleware('role_or_permission:purchase-orders.edit|Admin');
+        Route::post('/{purchaseOrder}/receive', [PurchaseOrderController::class, 'receive'])->name('receive')->middleware('role_or_permission:purchase-orders.edit|Admin');
+        Route::delete('/{purchaseOrder}', [PurchaseOrderController::class, 'destroy'])->name('destroy')->middleware('role_or_permission:purchase-orders.delete|Admin');
     });
 
     // ========== INVOICES ==========
     Route::prefix('invoices')->name('invoices.')->group(function () {
-        Route::get('/', [InvoiceController::class, 'index'])->name('index')->middleware('permission:invoices.view|role:Admin');
-        Route::get('/{invoice}', [InvoiceController::class, 'show'])->name('show')->middleware('permission:invoices.view|role:Admin');
-        Route::get('/{invoice}/pdf', [InvoiceController::class, 'downloadPdf'])->name('pdf')->middleware('permission:invoices.view|role:Admin');
-        Route::post('/orders/{order}/invoice', [InvoiceController::class, 'store'])->name('store')->middleware('permission:invoices.create|role:Admin');
-        Route::delete('/{invoice}', [InvoiceController::class, 'destroy'])->name('destroy')->middleware('permission:invoices.delete|role:Admin');
+        Route::get('/', [InvoiceController::class, 'index'])->name('index')->middleware('role_or_permission:invoices.view|Admin');
+        Route::get('/{invoice}', [InvoiceController::class, 'show'])->name('show')->middleware('role_or_permission:invoices.view|Admin');
+        Route::get('/{invoice}/card', [InvoiceController::class, 'card'])->name('card')->middleware('role_or_permission:invoices.view|Admin');
+        Route::get('/{invoice}/pdf', [InvoiceController::class, 'downloadPdf'])->name('pdf')->middleware('role_or_permission:invoices.view|Admin');
+        Route::post('/orders/{order}/invoice', [InvoiceController::class, 'store'])->name('store')->middleware('role_or_permission:invoices.create|Admin');
+        Route::delete('/{invoice}', [InvoiceController::class, 'destroy'])->name('destroy')->middleware('role_or_permission:invoices.delete|Admin');
     });
 
     // ========== PAYMENTS ==========
     Route::prefix('payments')->name('payments.')->group(function () {
-        Route::get('/', [PaymentController::class, 'index'])->name('index')->middleware('permission:orders.view|role:Admin');
-        Route::post('/orders/{order}/payments', [PaymentController::class, 'store'])->name('store')->middleware('permission:orders.create|role:Admin');
-        Route::delete('/orders/{order}/payments/{payment}', [PaymentController::class, 'destroy'])->name('destroy')->middleware('permission:orders.delete|role:Admin');
+        Route::get('/', [PaymentController::class, 'index'])->name('index')->middleware('role_or_permission:orders.view|Admin');
+        Route::post('/orders/{order}/payments', [PaymentController::class, 'store'])->name('store')->middleware('role_or_permission:orders.create|Admin');
+        Route::delete('/orders/{order}/payments/{payment}', [PaymentController::class, 'destroy'])->name('destroy')->middleware('role_or_permission:orders.delete|Admin');
     });
 
     // ========== ADMIN ONLY ==========

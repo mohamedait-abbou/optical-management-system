@@ -57,6 +57,15 @@ class ReservationController extends Controller
         return view('reservations.show', compact('reservation'));
     }
 
+    public function card(Reservation $reservation)
+    {
+        $sections = view('reservations.show', compact('reservation'))->renderSections();
+        return response()->json([
+            'title' => 'Réservation du ' . $reservation->reservation_date->format('d/m/Y'),
+            'html' => $sections['content']
+        ]);
+    }
+
     public function edit(Reservation $reservation)
     {
         $customers = Customer::orderBy('first_name')->get();

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script>if(localStorage.getItem('crm-dark')==='true')document.documentElement.classList.add('dark')</script>
     <title>Optical CRM - @yield('page-title', 'Tableau de bord')</title>
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -23,11 +24,39 @@
         #main-scroll::-webkit-scrollbar { width: 6px; }
         #main-scroll::-webkit-scrollbar-track { background: transparent; }
         #main-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+        
+        /* Dark mode overrides */
+        .dark body,
+        .dark #main-scroll,
+        .dark .dark-bg { background-color: #0f1720 !important; }
+        .dark .dark-gradient { background: #0f1720 !important; }
+        .dark .dark-sidebar { background: #0f1720 !important; }
+        .dark .glass-card { background: rgba(30, 41, 59, 0.7) !important; border-color: rgba(255,255,255,0.08) !important; }
+        .dark header { background: rgba(15, 23, 32, 0.9) !important; border-color: rgba(255,255,255,0.08) !important; }
+        .dark .dark-surface { background: #1e293b !important; }
+        .dark .dark-text { color: #f1f5f9 !important; }
+        .dark .dark-muted { color: #94a3b8 !important; }
+        .dark .dark-border { border-color: #334155 !important; }
+        .dark input, .dark textarea, .dark select {
+            background: #1e293b !important; border-color: #334155 !important; color: #f1f5f9 !important;
+        }
+        .dark .bg-white { background-color: #1e293b !important; }
+        .dark .bg-white\/50 { background-color: rgba(30,41,59,0.5) !important; }
+        .dark .bg-slate-50 { background-color: #0f1720 !important; }
+        .dark .border-slate-100 { border-color: #334155 !important; }
+        .dark .text-slate-900 { color: #f1f5f9 !important; }
+        .dark .text-slate-700 { color: #cbd5e1 !important; }
+        .dark .text-slate-600 { color: #94a3b8 !important; }
+        .dark .text-slate-500 { color: #64748b !important; }
+        .dark .ring-white { --tw-ring-color: rgba(30,41,59,0.8) !important; }
+        .dark .gradient-border::before {
+            background: linear-gradient(135deg, rgba(99,102,241,0.4), rgba(168,85,247,0.4), rgba(56,189,248,0.3)) !important;
+        }
     </style>
 </head>
 <body class="font-sans text-slate-900 bg-slate-50 antialiased">
     
-    <div x-data="{ mobileMenuOpen: false }" class="flex h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-white to-indigo-50/40 no-bounce">
+    <div x-data="{ mobileMenuOpen: false }" class="flex h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-white to-indigo-50/40 dark-bg no-bounce">
 
         <!-- ========================================== -->
         <!-- SIDEBAR -->
@@ -185,6 +214,10 @@
                     <div class="rounded-2xl bg-gradient-to-br from-indigo-500/20 to-fuchsia-500/10 border border-white/10 p-4">
                         <p class="text-xs uppercase tracking-[0.2em] text-indigo-300">Besoin d'aide ?</p>
                         <p class="mt-2 text-sm leading-6 text-slate-300">Contactez l'équipe IT pour toute demande de support interne.</p>
+                        <button @click="$store.theme.toggle()" 
+                                class="mt-3 w-full flex items-center justify-center gap-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 py-2 text-xs font-medium text-slate-300 transition"
+                                x-text="$store.theme.dark ? '☀️ Mode clair' : '🌙 Mode sombre'">
+                        </button>
                     </div>
                 </div>
             </div>
@@ -364,5 +397,45 @@
     </script>
 
     @stack('scripts')
+
+    <!-- Detail Modal (Alpine.js) -->
+    <div x-data x-show="$store.detailModal.open" x-cloak
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-50 overflow-y-auto"
+         @keydown.escape.window="$store.detailModal.close()">
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" @click="$store.detailModal.close()"></div>
+        <div class="relative min-h-screen flex items-start justify-center p-4 pt-12">
+            <div x-show="$store.detailModal.open"
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 translate-y-4"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 x-transition:leave="transition ease-in duration-150"
+                 x-transition:leave-start="opacity-100 translate-y-0"
+                 x-transition:leave-end="opacity-0 translate-y-4"
+                 class="relative w-full max-w-5xl rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 overflow-hidden">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+                    <h3 class="text-lg font-bold text-slate-900" x-text="$store.detailModal.title"></h3>
+                    <button type="button" @click="$store.detailModal.close()"
+                            class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                    </button>
+                </div>
+                <!-- Modal Content -->
+                <div class="p-6 max-h-[80vh] overflow-y-auto" x-show="!$store.detailModal.loading">
+                    <div x-html="$store.detailModal.content"></div>
+                </div>
+                <div x-show="$store.detailModal.loading" class="flex items-center justify-center p-12">
+                    <svg class="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                    <span class="ml-3 text-sm text-slate-600">Chargement...</span>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

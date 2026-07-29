@@ -26,18 +26,18 @@ class RoleSeeder extends Seeder
 
         // 5. MANAGER: Gets everything EXCEPT user/role/settings management
         $managerPermissions = $allPermissions->filter(function ($permission) {
-            return !in_array($permission->name, ['manage users', 'manage roles', 'manage settings']);
+            return !in_array($permission->name, ['users.manage', 'roles.manage', 'settings.manage']);
         });
         $manager->givePermissionTo($managerPermissions);
 
         // 6. EMPLOYEE: Gets ONLY specific view/create/edit permissions (NO delete, NO reports, NO settings)
         $employeePermissions = Permission::whereIn('name', [
-            'view customers', 'create customers', 'edit customers',
-            'view prescriptions', 'create prescriptions', 'edit prescriptions',
-            'view reservations', 'create reservations', 'edit reservations',
-            'view orders', 'create orders', 'edit orders',
-            'view payments', 'create payments', 'edit payments',
-            'view products', 'view categories', 'view brands', 'view invoices'
+            'customers.view', 'customers.create', 'customers.edit',
+            'prescriptions.view', 'prescriptions.create', 'prescriptions.edit',
+            'reservations.view', 'reservations.create', 'reservations.edit',
+            'orders.view', 'orders.create', 'orders.edit',
+            'payments.view', 'payments.create', 'payments.edit',
+            'products.view', 'categories.view', 'brands.view', 'invoices.view'
         ])->get();
         
         $employee->givePermissionTo($employeePermissions);

@@ -59,6 +59,16 @@ class InvoiceController extends Controller
         return view('invoices.show', compact('invoice'));
     }
 
+    public function card(Invoice $invoice)
+    {
+        $invoice->load('order.customer', 'order.items.product');
+        $sections = view('invoices.show', compact('invoice'))->renderSections();
+        return response()->json([
+            'title' => 'Facture ' . $invoice->invoice_number,
+            'html' => $sections['content']
+        ]);
+    }
+
     public function downloadPdf(Invoice $invoice)
     {
         $invoice->load('order.customer', 'order.items.product');

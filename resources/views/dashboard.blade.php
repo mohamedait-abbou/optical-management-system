@@ -97,6 +97,14 @@
     
     .number-counter { display: inline-block; animation: fade-in-up 0.5s ease-out forwards; }
     
+    .dark .glass-card {
+        background: rgba(30, 41, 59, 0.7);
+        border-color: rgba(255, 255, 255, 0.08);
+    }
+    .dark .premium-bg {
+        background: radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.04) 0%, transparent 50%);
+    }
     .glow-indigo { box-shadow: 0 0 40px rgba(99, 102, 241, 0.3); }
     .glow-violet { box-shadow: 0 0 40px rgba(139, 92, 246, 0.3); }
     .glow-cyan { box-shadow: 0 0 40px rgba(56, 189, 248, 0.3); }
@@ -338,7 +346,7 @@
         <!-- Low Stock Alerts -->
         <div class="scroll-reveal relative overflow-hidden rounded-3xl glass-card p-6 shadow-xl">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-bold text-slate-900">Stock faible</h3>
+                <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Stock faible</h3>
                 <span class="inline-flex items-center rounded-full bg-rose-50 px-2 py-1 text-xs font-semibold text-rose-700 border border-rose-200">{{ count($lowStockProducts) }} alertes</span>
             </div>
             <div class="space-y-3">

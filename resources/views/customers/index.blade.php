@@ -76,7 +76,7 @@
                             <x-status-badge variant="info">Client</x-status-badge>
                         </div>
                                     <div class="flex flex-wrap gap-2">
-                                        <a href="{{ route('customers.show', $customer) }}" class="text-brand-600 hover:text-brand-700">Voir</a>
+                                        <button type="button" @click="$store.detailModal.openUrl('{{ route('customers.card', $customer) }}')" class="text-brand-600 hover:text-brand-700">Voir</button>
                                         @can('customers.edit')
                                         <a href="{{ route('customers.edit', $customer) }}" class="text-slate-600 hover:text-slate-900">Modifier</a>
                                         @endcan
@@ -118,7 +118,7 @@
                                 <td class="px-6 py-4">{{ $customer->email ?? '—' }}</td>
                                 <td class="px-6 py-4">
                                     <div class="flex flex-wrap gap-2">
-                                        <a href="{{ route('customers.show', $customer) }}" class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-brand-700 transition hover:bg-brand-50">Voir</a>
+                                        <button type="button" @click="$store.detailModal.openUrl('{{ route('customers.card', $customer) }}')" class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-brand-700 transition hover:bg-brand-50">Voir</button>
                                         <a href="{{ route('customers.edit', $customer) }}" class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-slate-600 transition hover:bg-slate-100">Modifier</a>
                                         <button type="button" class="rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-sm font-medium text-rose-700 transition hover:bg-rose-100" @click="deleteId = {{ $customer->id }}; $dispatch('open-modal', { detail: 'delete-customer' })">Supprimer</button>
                                     </div>

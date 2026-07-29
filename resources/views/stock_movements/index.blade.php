@@ -52,7 +52,7 @@
                             <td class="px-4 py-4">{{ $movement->created_at->format('d/m/Y H:i') }}</td>
                             <td class="px-4 py-4 text-right">
                                 <div class="inline-flex items-center gap-2">
-                                    <a href="{{ route('stock-movements.show', $movement) }}" class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-100">Voir</a>
+                                    <button type="button" @click="$store.detailModal.openUrl('{{ route('stock-movements.card', $movement) }}')" class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-100">Voir</button>
                                     <a href="{{ route('stock-movements.edit', $movement) }}" class="rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700 hover:bg-brand-100">Modifier</a>
                                     <form action="{{ route('stock-movements.destroy', $movement) }}" method="POST" onsubmit="return confirm('Supprimer ce mouvement de stock ?')" class="inline-block">
                                         @csrf

@@ -55,6 +55,15 @@ class PrescriptionController extends Controller
         return view('prescriptions.show', compact('prescription'));
     }
 
+    public function card(Prescription $prescription)
+    {
+        $sections = view('prescriptions.show', compact('prescription'))->renderSections();
+        return response()->json([
+            'title' => 'Prescription du ' . optional($prescription->created_at)->format('d/m/Y'),
+            'html' => $sections['content']
+        ]);
+    }
+
     public function edit(Prescription $prescription)
     {
         $customers = Customer::orderBy('first_name')->get();

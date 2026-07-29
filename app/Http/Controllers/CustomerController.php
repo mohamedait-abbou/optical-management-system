@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
+use App\Mail\CustomerNotificationMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class CustomerController extends Controller
 {
@@ -30,7 +32,7 @@ class CustomerController extends Controller
 
     public function create()
     {
-        return view('customers.create ');
+        return view('customers.create');
     }
 
     public function store(Request $request)
@@ -58,7 +60,16 @@ class CustomerController extends Controller
     public function show(Customer $customer)
     {
         return view('customers.show', compact('customer'));
-    } 
+    }
+
+    public function card(Customer $customer)
+    {
+        $sections = view('customers.show', compact('customer'))->renderSections();
+        return response()->json([
+            'title' => $customer->first_name . ' ' . $customer->last_name,
+            'html' => $sections['content']
+        ]);
+    }
 
     public function edit(Customer $customer)
     {
@@ -79,5 +90,21 @@ class CustomerController extends Controller
 
         return redirect()->route('customers.index')
             ->with('success', 'Client supprimé avec succès.'); 
+    }
+
+    public function notifyEmail(Request $request, Customer $customer)
+    {
+        $data = $request->validate([
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string|max:5000',
+        ]);
+
+        Mail::to($customer->email)->send(new CustomerNotificationMail(
+            $customer,
+            $data['subject'],
+            $data['message']
+        ));
+
+        return back()->with('success', 'Email envoyé avec succès à ' . $customer->email);
     }
 }

@@ -83,7 +83,7 @@
                             <td class="px-4 py-4">{{ $reservation->reason ?? '—' }}</td>
                             <td class="px-4 py-4 text-right">
                                 <div class="inline-flex items-center gap-2">
-                                    <a href="{{ route('reservations.show', $reservation) }}" class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-100">Voir</a>
+                                    <button type="button" @click="$store.detailModal.openUrl('{{ route('reservations.card', $reservation) }}')" class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-100">Voir</button>
                                     <a href="{{ route('reservations.edit', $reservation) }}" class="rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700 hover:bg-brand-100">Modifier</a>
                                 </div>
                             </td>

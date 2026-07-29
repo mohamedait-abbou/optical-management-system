@@ -73,6 +73,16 @@ class OrderController extends Controller
         return view('orders.show', compact('order'));
     }
 
+    public function card(Order $order)
+    {
+        $order->load('customer', 'user', 'payments');
+        $sections = view('orders.show', compact('order'))->renderSections();
+        return response()->json([
+            'title' => 'Commande #' . $order->order_number,
+            'html' => $sections['content']
+        ]);
+    }
+
     public function edit(Order $order)
     {
         $customers = Customer::orderBy('first_name')->get();

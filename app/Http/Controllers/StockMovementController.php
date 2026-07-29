@@ -88,6 +88,16 @@ class StockMovementController extends Controller
         return view('stock_movements.show', compact('stockMovement'));
     }
 
+    public function card(StockMovement $stockMovement)
+    {
+        $stockMovement->load('product', 'user');
+        $sections = view('stock_movements.show', compact('stockMovement'))->renderSections();
+        return response()->json([
+            'title' => 'Mouvement #' . $stockMovement->id,
+            'html' => $sections['content']
+        ]);
+    }
+
     /**
      * Show the form for editing the specified resource.
      */

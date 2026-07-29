@@ -10,18 +10,21 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
-            'view customers', 'create customers', 'edit customers', 'delete customers',
-            'view products', 'create products', 'edit products', 'delete products',
-            'view categories', 'create categories', 'edit categories', 'delete categories',
-            'view brands', 'create brands', 'edit brands', 'delete brands',
-            'view prescriptions', 'create prescriptions', 'edit prescriptions', 'delete prescriptions',
-            'view orders', 'create orders', 'edit orders', 'delete orders',
-            'view reservations', 'create reservations', 'edit reservations', 'delete reservations',
-            'view payments', 'create payments', 'edit payments', 'delete payments',
-            'view invoices',
-            'view inventory', 'manage inventory',
-            'view reports',
-            'manage users', 'manage roles', 'manage settings',
+            'customers.view', 'customers.create', 'customers.edit', 'customers.delete',
+            'products.view', 'products.create', 'products.edit', 'products.delete',
+            'categories.view', 'categories.create', 'categories.edit', 'categories.delete',
+            'brands.view', 'brands.create', 'brands.edit', 'brands.delete',
+            'prescriptions.view', 'prescriptions.create', 'prescriptions.edit', 'prescriptions.delete',
+            'orders.view', 'orders.create', 'orders.edit', 'orders.delete',
+            'reservations.view', 'reservations.create', 'reservations.edit', 'reservations.delete',
+            'stock-movements.view', 'stock-movements.create', 'stock-movements.edit', 'stock-movements.delete',
+            'suppliers.view', 'suppliers.create', 'suppliers.edit', 'suppliers.delete',
+            'purchase-orders.view', 'purchase-orders.create', 'purchase-orders.edit', 'purchase-orders.delete',
+            'invoices.view', 'invoices.create', 'invoices.delete',
+            'payments.view', 'payments.create', 'payments.delete',
+            'inventory.view', 'inventory.manage',
+            'view-reports',
+            'users.manage', 'roles.manage', 'settings.manage',
         ];
 
         foreach ($permissions as $permission) {

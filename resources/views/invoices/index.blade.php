@@ -54,7 +54,7 @@
                             <td class="px-4 py-4">{{ number_format($invoice->total_ttc, 2) }} DH</td>
                             <td class="px-4 py-4 text-right">
                                 <div class="inline-flex items-center gap-2">
-                                    <a href="{{ route('invoices.show', $invoice) }}" class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-100">Voir</a>
+                                    <button type="button" @click="$store.detailModal.openUrl('{{ route('invoices.card', $invoice) }}')" class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-100">Voir</button>
                                     <a href="{{ route('invoices.pdf', $invoice) }}" class="rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700 hover:bg-brand-100">PDF</a>
                                     
                                     {{-- DELETE BUTTON: Only visible if user has permission --}}

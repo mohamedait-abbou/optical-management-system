@@ -69,6 +69,15 @@ if (isset($validated['quantity']) && isset($validated['alert_threshold']) && $va
         return view('products.show', compact('product'));
     }
 
+    public function card(Product $product)
+    {
+        $sections = view('products.show', compact('product'))->renderSections();
+        return response()->json([
+            'title' => $product->name,
+            'html' => $sections['content']
+        ]);
+    }
+
     public function edit(Product $product)
     {
         $categories = Category::orderBy('name')->get();

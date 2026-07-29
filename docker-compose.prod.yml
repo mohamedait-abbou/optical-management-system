@@ -1,0 +1,19 @@
+services:
+  app:
+    restart: always
+    ports:
+      - "8000:80"
+    volumes: []
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 512M
+
+  mysql:
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
