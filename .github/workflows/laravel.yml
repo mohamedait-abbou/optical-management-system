@@ -29,23 +29,19 @@ jobs:
           --health-retries=5
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: "8.5"
           extensions: mbstring,pdo,pdo_mysql
           coverage: none
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "22"
 
-      - name: Copy .env
-        run: cp .env.example .env
+      - run: cp .env.example .env
 
       - name: Configure Database
         run: |
@@ -57,17 +53,13 @@ jobs:
           echo "DB_USERNAME=root" >> .env
           echo "DB_PASSWORD=root" >> .env
 
-      - name: Install Composer
-        run: composer install --no-interaction --prefer-dist
+      - run: composer install --no-interaction --prefer-dist
 
-      - name: Generate Key
-        run: php artisan key:generate
+      - run: php artisan key:generate
 
-      - name: Install NPM
-        run: npm install
+      - run: npm install
 
-      - name: Build Assets
-        run: npm run build
+      - run: npm run build
 
       - name: Wait for MySQL
         run: |
@@ -76,11 +68,9 @@ jobs:
             sleep 2
           done
 
-      - name: Run Migrations
-        run: php artisan migrate --force
+      - run: php artisan migrate --force
 
-      - name: Run Tests
-        run: php artisan test
+      - run: php artisan test
 
   deploy:
     needs: tests
@@ -95,10 +85,23 @@ jobs:
           git fetch origin
           git reset --hard origin/main
 
+          docker compose down
+
           docker compose up -d --build
+
+          echo "Waiting for MySQL..."
+
+          until docker compose exec -T mysql mysqladmin ping -hlocalhost --silent
+          do
+            sleep 2
+          done
+
+          echo "MySQL is ready."
 
           docker compose exec -T app php artisan migrate --force
 
+          docker compose exec -T app php artisan optimize:clear
+
           docker compose exec -T app php artisan optimize
 
-          echo "Deployment finished successfully!"
+          echo "✅ Deployment finished successfully!"
