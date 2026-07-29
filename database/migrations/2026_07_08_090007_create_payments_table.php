@@ -12,19 +12,18 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('order_id')
-                  ->constrained()
-                  ->cascadeOnDelete();
+                ->constrained()
+                ->cascadeOnDelete();
 
             $table->decimal('amount', 10, 2);
             $table->date('payment_date');
             $table->enum('payment_method', ['especes', 'carte', 'virement', 'cheque'])
-                  ->default('especes');
+                ->default('especes');
             $table->text('notes')->nullable();
 
             $table->timestamps();
         });
     }
-     
 
     public function down(): void
     {

@@ -1,24 +1,27 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\PrescriptionController;
-use App\Http\Controllers\ReservationController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\StockMovementController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PrescriptionController;
 use App\Http\Controllers\PrescriptionHistoryController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseOrderController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\StockMovementController;
 use App\Http\Controllers\SupplierController;
-use App\Http\Controllers\ReportController; // 👈 Make sure this is here!
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
+
+ // 👈 Make sure this is here!
 
 Route::get('/', function () {
     return view('welcome');
@@ -29,9 +32,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Notifications (accessible à tous)
-    Route::get('/notifications/list', [App\Http\Controllers\NotificationController::class, 'list'])->name('notifications.list');
-    Route::post('/notifications/read/{id}', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.read');
-    Route::post('/notifications/read-all', [App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
+    Route::get('/notifications/list', [NotificationController::class, 'list'])->name('notifications.list');
+    Route::post('/notifications/read/{id}', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
 
     // Profil utilisateur (accessible à tous)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -157,8 +160,8 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{supplier}', [SupplierController::class, 'destroy'])->name('destroy')->middleware('role_or_permission:suppliers.delete|Admin');
     });
 
-        // Reports & Analytics
-Route::get('/reports', [ReportController::class, 'index'])->name('reports.index')->middleware('role_or_permission:view-reports|Admin');
+    // Reports & Analytics
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index')->middleware('role_or_permission:view-reports|Admin');
 
     // ========== PURCHASE ORDERS ==========
     Route::prefix('purchase-orders')->name('purchase-orders.')->group(function () {

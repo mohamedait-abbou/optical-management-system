@@ -14,7 +14,7 @@ class PurchaseOrderFactory extends Factory
     {
         return [
             'supplier_id' => Supplier::factory(),
-            'order_number' => 'PO-' . now()->format('Ymd') . '-' . fake()->unique()->randomNumber(4),
+            'order_number' => 'PO-'.now()->format('Ymd').'-'.fake()->unique()->randomNumber(4),
             'order_date' => fake()->dateTimeBetween('-3 months', 'now'),
             'expected_date' => fake()->optional(0.7)->dateTimeBetween('now', '+2 months'),
             'status' => fake()->randomElement(['pending', 'received']),

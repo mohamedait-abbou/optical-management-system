@@ -12,7 +12,7 @@ class CustomerFactory extends Factory
             'first_name' => fake()->firstName(),
             'last_name' => fake()->lastName(),
             'cin' => fake()->regexify('[A-Z]{2}[0-9]{6}'),
-            'phone' => '0' . fake()->numerify('6########'),
+            'phone' => '0'.fake()->numerify('6########'),
             'email' => fake()->safeEmail(),
             'address' => fake()->address(),
             'birth_date' => fake()->date(),

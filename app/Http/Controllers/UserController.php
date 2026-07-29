@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -20,7 +20,7 @@ class UserController extends Controller
 
         foreach ($permissions as $permission) {
             $module = explode('.', $permission)[0];
-            if (!isset($grouped[$module])) {
+            if (! isset($grouped[$module])) {
                 $grouped[$module] = [];
             }
             $grouped[$module][] = $permission;
@@ -44,7 +44,6 @@ class UserController extends Controller
         return view('users.index', compact('users'));
     }
 
-
     /**
      * Show create staff form
      */
@@ -55,7 +54,6 @@ class UserController extends Controller
 
         return view('users.create', compact('roles', 'groupedPermissions'));
     }
-
 
     /**
      * Store new staff
@@ -70,13 +68,11 @@ class UserController extends Controller
             'role' => 'required|exists:roles,name',
         ]);
 
-
         $user = User::create([
-            'name'=>$request->name,
-            'email'=>$request->email,
-            'password'=>Hash::make($request->password),
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
         ]);
-
 
         // assign role
         $user->assignRole($request->role);
@@ -84,12 +80,10 @@ class UserController extends Controller
         // sync permissions directly on user
         $user->syncPermissions($request->permissions ?? []);
 
-
         return redirect()
             ->route('users.index')
-            ->with('success','Staff created successfully');
+            ->with('success', 'Staff created successfully');
     }
-
 
     /**
      * Show edit staff
@@ -103,23 +97,20 @@ class UserController extends Controller
         return view('users.edit', compact('user', 'roles', 'groupedPermissions', 'userPermissions'));
     }
 
-
-
     /**
      * Update staff
      */
     public function update(Request $request, User $user)
     {
         $request->validate([
-            'name'=>'required',
-            'email'=>'required|email',
-            'role'=>'required'
+            'name' => 'required',
+            'email' => 'required|email',
+            'role' => 'required',
         ]);
 
-
         $user->update([
-            'name'=>$request->name,
-            'email'=>$request->email,
+            'name' => $request->name,
+            'email' => $request->email,
         ]);
 
         if ($request->filled('password')) {
@@ -128,17 +119,14 @@ class UserController extends Controller
         }
 
         $user->syncRoles([$request->role]);
-        
+
         // sync permissions directly on user
         $user->syncPermissions($request->permissions ?? []);
 
-
         return redirect()
             ->route('users.index')
-            ->with('success','Staff updated');
+            ->with('success', 'Staff updated');
     }
-
-
 
     /**
      * Delete staff
@@ -147,9 +135,8 @@ class UserController extends Controller
     {
         $user->delete();
 
-
         return redirect()
             ->route('users.index')
-            ->with('success','Staff deleted');
+            ->with('success', 'Staff deleted');
     }
 }

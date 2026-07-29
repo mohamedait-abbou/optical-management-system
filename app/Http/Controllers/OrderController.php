@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
-use App\Models\Order;
-use App\Models\Customer;
-use App\Models\OrderItem;
-use App\Models\User;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
+use App\Models\Customer;
+use App\Models\Order;
+use App\Models\Product;
 use App\Notifications\NewOrderNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
 
 class OrderController extends Controller
 {
@@ -23,10 +20,10 @@ class OrderController extends Controller
         $orders = Order::with('customer', 'user')
             ->when($search, function ($query) use ($search) {
                 $query->where('order_number', 'like', "%{$search}%")
-                      ->orWhereHas('customer', function ($q) use ($search) {
-                          $q->where('first_name', 'like', "%{$search}%")
+                    ->orWhereHas('customer', function ($q) use ($search) {
+                        $q->where('first_name', 'like', "%{$search}%")
                             ->orWhere('last_name', 'like', "%{$search}%");
-                      });
+                    });
             })
             ->latest()
             ->paginate(10)
@@ -43,12 +40,12 @@ class OrderController extends Controller
         return view('orders.create', compact('customers', 'products'));
     }
 
-        public function store(StoreOrderRequest $request)
+    public function store(StoreOrderRequest $request)
     {
         $order = Order::create([
             'customer_id' => $request->customer_id,
             'user_id' => Auth::id(),
-            'order_number' => 'ORD-' . now()->format('YmdHis'),
+            'order_number' => 'ORD-'.now()->format('YmdHis'),
             'order_date' => $request->order_date,
             'status' => $request->status,
             'total_amount' => 0,
@@ -56,9 +53,9 @@ class OrderController extends Controller
         ]);
 
         $this->saveOrderItems($order, $request->products, $request->quantities);
-      
+
         // ✅ MODIFICATION ICI : Notifie directement l'utilisateur connecté
-        $customerName = $order->customer ? ($order->customer->first_name . ' ' . $order->customer->last_name) : 'Client';
+        $customerName = $order->customer ? ($order->customer->first_name.' '.$order->customer->last_name) : 'Client';
         Auth::user()->notify(new NewOrderNotification($order->order_number, $customerName));
 
         return redirect()
@@ -77,9 +74,10 @@ class OrderController extends Controller
     {
         $order->load('customer', 'user', 'payments');
         $sections = view('orders.show', compact('order'))->renderSections();
+
         return response()->json([
-            'title' => 'Commande #' . $order->order_number,
-            'html' => $sections['content']
+            'title' => 'Commande #'.$order->order_number,
+            'html' => $sections['content'],
         ]);
     }
 
@@ -126,7 +124,7 @@ class OrderController extends Controller
         foreach ($productIds as $index => $productId) {
             $quantity = intval($quantities[$index] ?? 0);
 
-            if ($quantity < 1 || !isset($products[$productId])) {
+            if ($quantity < 1 || ! isset($products[$productId])) {
                 continue;
             }
 

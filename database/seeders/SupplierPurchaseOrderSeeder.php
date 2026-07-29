@@ -2,14 +2,13 @@
 
 namespace Database\Seeders;
 
-use App\Models\Supplier;
+use App\Models\Brand;
+use App\Models\Category;
+use App\Models\Product;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderItem;
-use App\Models\Category;
-use App\Models\Brand;
-use App\Models\Product;
+use App\Models\Supplier;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class SupplierPurchaseOrderSeeder extends Seeder
 {
@@ -88,9 +87,9 @@ class SupplierPurchaseOrderSeeder extends Seeder
                 ['name' => $data['name']],
                 [
                     'contact_name' => $data['contact_name'],
-                    'email' => strtolower(str_replace(' ', '', fake()->unique()->userName())) . '@' . fake()->freeEmailDomain(),
-                    'phone' => '0' . fake()->numerify('6########'),
-                    'address' => fake()->streetAddress() . ', ' . fake()->city(),
+                    'email' => strtolower(str_replace(' ', '', fake()->unique()->userName())).'@'.fake()->freeEmailDomain(),
+                    'phone' => '0'.fake()->numerify('6########'),
+                    'address' => fake()->streetAddress().', '.fake()->city(),
                     'notes' => $index % 3 === 0 ? 'Fournisseur principal' : null,
                 ]
             );
@@ -110,7 +109,7 @@ class SupplierPurchaseOrderSeeder extends Seeder
 
             $order = PurchaseOrder::create([
                 'supplier_id' => fake()->randomElement($supplierIds),
-                'order_number' => 'PO-' . $orderDate->format('Ymd') . '-' . str_pad(fake()->unique()->randomNumber(4), 4, '0', STR_PAD_LEFT),
+                'order_number' => 'PO-'.$orderDate->format('Ymd').'-'.str_pad(fake()->unique()->randomNumber(4), 4, '0', STR_PAD_LEFT),
                 'order_date' => $orderDate,
                 'expected_date' => $expectedDate,
                 'status' => $status,

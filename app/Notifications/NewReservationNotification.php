@@ -10,6 +10,7 @@ class NewReservationNotification extends Notification
     use Queueable;
 
     public $customerName;
+
     public $date;
 
     public function __construct($customerName, $date)
@@ -29,7 +30,7 @@ class NewReservationNotification extends Notification
             'message' => "📅 Nouveau rendez-vous pour {$this->customerName} le {$this->date}.",
             'icon' => 'calendar',
             'link' => route('reservations.index'),
-            'color' => 'cyan'
+            'color' => 'cyan',
         ];
     }
 }

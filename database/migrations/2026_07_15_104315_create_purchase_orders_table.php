@@ -9,20 +9,20 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   public function up(): void
-{
-    Schema::create('purchase_orders', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('supplier_id')->constrained('suppliers')->cascadeOnDelete();
-        $table->string('order_number')->unique();
-        $table->date('order_date');
-        $table->date('expected_date')->nullable();
-        $table->enum('status', ['pending', 'received', 'cancelled'])->default('pending');
-        $table->decimal('total_amount', 10, 2)->default(0);
-        $table->text('notes')->nullable();
-        $table->timestamps();
-    });
-}
+    public function up(): void
+    {
+        Schema::create('purchase_orders', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('supplier_id')->constrained('suppliers')->cascadeOnDelete();
+            $table->string('order_number')->unique();
+            $table->date('order_date');
+            $table->date('expected_date')->nullable();
+            $table->enum('status', ['pending', 'received', 'cancelled'])->default('pending');
+            $table->decimal('total_amount', 10, 2)->default(0);
+            $table->text('notes')->nullable();
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.

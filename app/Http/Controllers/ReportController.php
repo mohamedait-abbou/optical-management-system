@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Order;
-use App\Models\User;
 use App\Models\Product;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
@@ -41,15 +40,13 @@ class ReportController extends Controller
             ->orderBy('total_revenue', 'desc')
             ->get();
 
-        
-
         // 4. Dead Stock Alert (Products not sold in the last 90 days)
-        $deadStock = Product::whereNotIn('id', function($query) {
-                $query->select('order_items.product_id')
-                      ->from('order_items')
-                      ->join('orders', 'order_items.order_id', '=', 'orders.id')
-                      ->where('orders.created_at', '>=', Carbon::now()->subDays(90));
-            })
+        $deadStock = Product::whereNotIn('id', function ($query) {
+            $query->select('order_items.product_id')
+                ->from('order_items')
+                ->join('orders', 'order_items.order_id', '=', 'orders.id')
+                ->where('orders.created_at', '>=', Carbon::now()->subDays(90));
+        })
             ->where('quantity', '>', 0)
             ->select('name', 'quantity', 'price')
             ->limit(10)

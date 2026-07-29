@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Prescription;
-use App\Models\Customer;
 use App\Http\Requests\StorePrescriptionRequest;
 use App\Http\Requests\UpdatePrescriptionRequest;
+use App\Models\Customer;
+use App\Models\Prescription;
 use Illuminate\Http\Request;
 
 class PrescriptionController extends Controller
@@ -18,10 +18,10 @@ class PrescriptionController extends Controller
             ->when($search, function ($query, $search) {
                 $query->where(function ($query) use ($search) {
                     $query->where('doctor_name', 'like', "%{$search}%")
-                          ->orWhereHas('customer', function ($q) use ($search) {
-                              $q->where('first_name', 'like', "%{$search}%")
+                        ->orWhereHas('customer', function ($q) use ($search) {
+                            $q->where('first_name', 'like', "%{$search}%")
                                 ->orWhere('last_name', 'like', "%{$search}%");
-                          });
+                        });
                 });
             })
             ->latest()
@@ -58,9 +58,10 @@ class PrescriptionController extends Controller
     public function card(Prescription $prescription)
     {
         $sections = view('prescriptions.show', compact('prescription'))->renderSections();
+
         return response()->json([
-            'title' => 'Prescription du ' . optional($prescription->created_at)->format('d/m/Y'),
-            'html' => $sections['content']
+            'title' => 'Prescription du '.optional($prescription->created_at)->format('d/m/Y'),
+            'html' => $sections['content'],
         ]);
     }
 

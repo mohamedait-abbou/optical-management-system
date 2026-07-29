@@ -112,6 +112,21 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Deploy application
+      - uses: actions/checkout@v4
+
+      - name: Build and deploy Docker containers
         run: |
-          bash /opt/optical-crm/deploy.sh
+          docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+
+      - name: Wait for MySQL
+        run: sleep 10
+
+      - name: Run database migrations
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.prod.yml exec -T app php artisan migrate --force
+
+      - name: Optimize application
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.prod.yml exec -T app php artisan config:cache
+          docker compose -f docker-compose.yml -f docker-compose.prod.yml exec -T app php artisan route:cache
+          docker compose -f docker-compose.yml -f docker-compose.prod.yml exec -T app php artisan view:cache

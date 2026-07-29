@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Mail;
 class TestSendOrderReady extends Command
 {
     protected $signature = 'test:order-ready {order? : The order ID}';
+
     protected $description = 'Test sending the order ready email';
 
     public function handle(): void
@@ -22,13 +23,15 @@ class TestSendOrderReady extends Command
             $order = Order::with('customer')->latest()->first();
         }
 
-        if (!$order) {
+        if (! $order) {
             $this->error('Aucune commande trouvée.');
+
             return;
         }
 
-        if (!$order->customer || !$order->customer->email) {
+        if (! $order->customer || ! $order->customer->email) {
             $this->error('Le client de cette commande n\'a pas d\'email.');
+
             return;
         }
 

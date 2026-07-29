@@ -9,23 +9,23 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   public function up(): void
-{
-    Schema::create('brands', function (Blueprint $table) {
+    public function up(): void
+    {
+        Schema::create('brands', function (Blueprint $table) {
 
-        $table->id();
+            $table->id();
 
-        $table->string('name');
+            $table->string('name');
 
-        $table->string('country')->nullable();
+            $table->string('country')->nullable();
 
-        $table->string('logo')->nullable();
+            $table->string('logo')->nullable();
 
-        $table->text('description')->nullable();
+            $table->text('description')->nullable();
 
-        $table->timestamps();
-    });
-}
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.

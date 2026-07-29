@@ -20,9 +20,9 @@ class Invoice extends Model
 
     protected $casts = [
         'issue_date' => 'date',
-        'tax_rate'   => 'decimal:2',
-        'total_ht'   => 'decimal:2',
-        'total_ttc'  => 'decimal:2',
+        'tax_rate' => 'decimal:2',
+        'total_ht' => 'decimal:2',
+        'total_ttc' => 'decimal:2',
     ];
 
     /**

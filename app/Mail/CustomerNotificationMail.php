@@ -14,7 +14,9 @@ class CustomerNotificationMail extends Mailable
     use Queueable, SerializesModels;
 
     public Customer $customer;
+
     public string $subjectText;
+
     public string $messageContent;
 
     public function __construct(Customer $customer, string $subject, string $message)

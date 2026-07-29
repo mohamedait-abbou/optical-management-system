@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PrescriptionHistory;
 use App\Models\Customer;
+use App\Models\PrescriptionHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -88,7 +88,7 @@ class PrescriptionHistoryController extends Controller
             ->get(['examination_date', 'od_sphere', 'og_sphere', 'od_cylinder', 'og_cylinder']);
 
         return response()->json([
-            'dates' => $prescriptions->pluck('examination_date')->map(fn($d) => $d->format('d/m/Y')),
+            'dates' => $prescriptions->pluck('examination_date')->map(fn ($d) => $d->format('d/m/Y')),
             'od_sphere' => $prescriptions->pluck('od_sphere'),
             'og_sphere' => $prescriptions->pluck('og_sphere'),
             'od_cylinder' => $prescriptions->pluck('od_cylinder'),

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Mail;
 class TestSendReminder extends Command
 {
     protected $signature = 'test:send-reminder {reservation? : The reservation ID}';
+
     protected $description = 'Test sending a reservation reminder email';
 
     public function handle(): void
@@ -22,13 +23,15 @@ class TestSendReminder extends Command
             $reservation = Reservation::with('customer')->latest()->first();
         }
 
-        if (!$reservation) {
+        if (! $reservation) {
             $this->error('Aucune réservation trouvée.');
+
             return;
         }
 
-        if (!$reservation->customer || !$reservation->customer->email) {
+        if (! $reservation->customer || ! $reservation->customer->email) {
             $this->error('Le client de cette réservation n\'a pas d\'email.');
+
             return;
         }
 

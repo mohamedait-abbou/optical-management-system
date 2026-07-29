@@ -23,7 +23,7 @@ class Product extends Model
     ];
 
     protected $casts = [
-        'price'      => 'decimal:2',
+        'price' => 'decimal:2',
         'cost_price' => 'decimal:2',
     ];
 
@@ -34,10 +34,11 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
     public function brand()
-{
-    return $this->belongsTo(Brand::class);
-}
+    {
+        return $this->belongsTo(Brand::class);
+    }
 
     /**
      * Vérifie si le stock est faible.
@@ -48,17 +49,17 @@ class Product extends Model
     }
 
     public function orderItems()
-{
-    return $this->hasMany(OrderItem::class);
-}
-public function stockMovements()
-{
-    return $this->hasMany(StockMovement::class);
-}
+    {
+        return $this->hasMany(OrderItem::class);
+    }
 
-public function purchaseOrderItems()
-{
-    return $this->hasMany(PurchaseOrderItem::class);
-}
+    public function stockMovements()
+    {
+        return $this->hasMany(StockMovement::class);
+    }
 
+    public function purchaseOrderItems()
+    {
+        return $this->hasMany(PurchaseOrderItem::class);
+    }
 }

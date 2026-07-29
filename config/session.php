@@ -16,11 +16,11 @@ return [
     | Supported: "file", "cookie", "database", "memcached",
     |            "redis", "dynamodb", "array"
     |
-    */   
+    */
 
     'driver' => env('SESSION_DRIVER', 'database'),
 
-    /* 
+    /*
     |--------------------------------------------------------------------------
     | Session Lifetime
     |--------------------------------------------------------------------------

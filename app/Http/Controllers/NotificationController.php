@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
@@ -23,7 +22,7 @@ class NotificationController extends Controller
 
         return response()->json([
             'notifications' => $notifications,
-            'unread_count' => Auth::user()->unreadNotifications()->count()
+            'unread_count' => Auth::user()->unreadNotifications()->count(),
         ]);
     }
 
@@ -33,12 +32,14 @@ class NotificationController extends Controller
         if ($notification) {
             $notification->markAsRead();
         }
+
         return response()->json(['success' => true]);
     }
 
     public function markAllAsRead()
     {
         Auth::user()->unreadNotifications->markAsRead();
+
         return response()->json(['success' => true]);
     }
 }

@@ -66,13 +66,13 @@ class StockMovement extends Model
 
     public function scopeSearch($query, $search)
     {
-        if (!$search) {
+        if (! $search) {
             return $query;
         }
 
         return $query->whereHas('product', function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%");
-            })
+            $q->where('name', 'like', "%{$search}%");
+        })
             ->orWhere('reference', 'like', "%{$search}%")
             ->orWhere('type', 'like', "%{$search}%");
     }

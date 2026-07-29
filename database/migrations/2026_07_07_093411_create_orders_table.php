@@ -13,25 +13,25 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('customer_id')
-                  ->constrained()
-                  ->cascadeOnDelete();
+                ->constrained()
+                ->cascadeOnDelete();
 
             $table->foreignId('user_id')
-                  ->constrained()
-                  ->cascadeOnDelete();
+                ->constrained()
+                ->cascadeOnDelete();
 
             $table->string('order_number')->unique();
 
             $table->date('order_date');
 
-            $table->enum('status',[
+            $table->enum('status', [
                 'Pending',
                 'Processing',
                 'Completed',
-                'Cancelled'
+                'Cancelled',
             ])->default('Pending');
 
-            $table->decimal('total_amount',10,2)->default(0);
+            $table->decimal('total_amount', 10, 2)->default(0);
 
             $table->text('notes')->nullable();
 

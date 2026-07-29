@@ -13,7 +13,7 @@ return new class extends Migration
                 $table->dropColumn('brand');
             });
         }
-       
+
     }
 
     public function down(): void

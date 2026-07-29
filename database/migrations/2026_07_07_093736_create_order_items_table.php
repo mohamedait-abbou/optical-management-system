@@ -13,23 +13,23 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('order_id')
-                  ->constrained()
-                  ->cascadeOnDelete();
+                ->constrained()
+                ->cascadeOnDelete();
 
             $table->foreignId('product_id')
-                  ->constrained()
-                  ->cascadeOnDelete();
+                ->constrained()
+                ->cascadeOnDelete();
 
             $table->integer('quantity');
 
-            $table->decimal('unit_price',10,2);
+            $table->decimal('unit_price', 10, 2);
 
-            $table->decimal('subtotal',10,2);
+            $table->decimal('subtotal', 10, 2);
 
             $table->timestamps();
 
         });
-        
+
     }
 
     public function down(): void

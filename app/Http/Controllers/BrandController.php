@@ -2,28 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Brand;
 use App\Http\Requests\StoreBrandRequest;
 use App\Http\Requests\UpdateBrandRequest;
+use App\Models\Brand;
 use Illuminate\Http\Request;
 
 class BrandController extends Controller
-
-
 {
-
     public function index(Request $request)
     {
         $search = $request->search;
 
-        $brands = Brand::when($search,function($query,$search){
+        $brands = Brand::when($search, function ($query, $search) {
 
-            $query->where('name','like',"%$search%")
-                  ->orWhere('country','like',"%$search%");
+            $query->where('name', 'like', "%$search%")
+                ->orWhere('country', 'like', "%$search%");
 
         })->latest()->paginate(10);
 
-        return view('brands.index',compact('brands','search'));
+        return view('brands.index', compact('brands', 'search'));
     }
 
     public function create()
@@ -37,17 +34,17 @@ class BrandController extends Controller
 
         return redirect()
             ->route('brands.index')
-            ->with('success','Brand created successfully.');
+            ->with('success', 'Brand created successfully.');
     }
 
     public function show(Brand $brand)
     {
-        return view('brands.show',compact('brand'));
+        return view('brands.show', compact('brand'));
     }
 
     public function edit(Brand $brand)
     {
-        return view('brands.edit',compact('brand'));
+        return view('brands.edit', compact('brand'));
     }
 
     public function update(UpdateBrandRequest $request, Brand $brand)
@@ -56,7 +53,7 @@ class BrandController extends Controller
 
         return redirect()
             ->route('brands.index')
-            ->with('success','Brand updated successfully.');
+            ->with('success', 'Brand updated successfully.');
     }
 
     public function destroy(Brand $brand)

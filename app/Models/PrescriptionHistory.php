@@ -6,10 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PrescriptionHistory extends Model
-
-
 {
     protected $table = 'prescription_history';
+
     protected $fillable = [
         'customer_id',
         'user_id',
@@ -53,7 +52,10 @@ class PrescriptionHistory extends Model
     // Helper to format prescription value
     public function formatValue($value)
     {
-        if (is_null($value)) return '-';
-        return ($value > 0 ? '+' : '') . number_format($value, 2);
+        if (is_null($value)) {
+            return '-';
+        }
+
+        return ($value > 0 ? '+' : '').number_format($value, 2);
     }
 }

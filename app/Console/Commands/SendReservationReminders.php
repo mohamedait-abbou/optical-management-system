@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 class SendReservationReminders extends Command
 {
     protected $signature = 'emails:send-reminders';
+
     protected $description = 'Send email reminders for confirmed reservations 24h before';
 
     public function handle(): void
@@ -30,6 +31,7 @@ class SendReservationReminders extends Command
 
         if ($reservations->isEmpty()) {
             $this->info('Aucun rappel à envoyer.');
+
             return;
         }
 

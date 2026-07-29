@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreStockMovementRequest;
+use App\Http\Requests\UpdateStockMovementRequest;
 use App\Models\Product;
 use App\Models\StockMovement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use App\Http\Requests\StoreStockMovementRequest;
-use App\Http\Requests\UpdateStockMovementRequest;
 
 class StockMovementController extends Controller
 {
@@ -65,11 +65,11 @@ class StockMovementController extends Controller
 
             StockMovement::create([
                 'product_id' => $product->id,
-                'user_id'    => Auth::id(),
-                'type'       => $request->type,
-                'quantity'   => $request->quantity,
-                'reference'  => $request->reference,
-                'notes'      => $request->notes,
+                'user_id' => Auth::id(),
+                'type' => $request->type,
+                'quantity' => $request->quantity,
+                'reference' => $request->reference,
+                'notes' => $request->notes,
             ]);
         });
 
@@ -92,9 +92,10 @@ class StockMovementController extends Controller
     {
         $stockMovement->load('product', 'user');
         $sections = view('stock_movements.show', compact('stockMovement'))->renderSections();
+
         return response()->json([
-            'title' => 'Mouvement #' . $stockMovement->id,
-            'html' => $sections['content']
+            'title' => 'Mouvement #'.$stockMovement->id,
+            'html' => $sections['content'],
         ]);
     }
 
@@ -145,10 +146,10 @@ class StockMovementController extends Controller
 
             $stockMovement->update([
                 'product_id' => $newProduct->id,
-                'type'       => $request->type,
-                'quantity'   => $request->quantity,
-                'reference'  => $request->reference,
-                'notes'      => $request->notes,
+                'type' => $request->type,
+                'quantity' => $request->quantity,
+                'reference' => $request->reference,
+                'notes' => $request->notes,
             ]);
         });
 

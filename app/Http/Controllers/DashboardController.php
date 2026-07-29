@@ -61,14 +61,14 @@ class DashboardController extends Controller
 
         // Génération de l'activité récente (Commandes + Prescriptions)
         $recentActivity = [];
-        
+
         $recentOrders = Order::with('customer')->latest()->take(3)->get();
         foreach ($recentOrders as $order) {
             $recentActivity[] = [
                 'icon' => 'shopping-cart',
                 'color' => 'from-indigo-500 to-blue-500',
                 'title' => 'Nouvelle commande',
-                'description' => 'Commande #' . $order->order_number . ' pour ' . ($order->customer->first_name ?? 'Client') . ' ' . ($order->customer->last_name ?? ''),
+                'description' => 'Commande #'.$order->order_number.' pour '.($order->customer->first_name ?? 'Client').' '.($order->customer->last_name ?? ''),
                 'time' => $order->created_at->diffForHumans(),
             ];
         }
@@ -79,7 +79,7 @@ class DashboardController extends Controller
                 'icon' => 'clipboard-check',
                 'color' => 'from-fuchsia-500 to-pink-500',
                 'title' => 'Nouvelle prescription',
-                'description' => 'Prescription ajoutée pour ' . ($prescription->customer->first_name ?? 'Client') . ' ' . ($prescription->customer->last_name ?? ''),
+                'description' => 'Prescription ajoutée pour '.($prescription->customer->first_name ?? 'Client').' '.($prescription->customer->last_name ?? ''),
                 'time' => $prescription->created_at->diffForHumans(),
             ];
         }

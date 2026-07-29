@@ -23,7 +23,7 @@ class OrderReadyMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Votre commande #' . $this->order->order_number . ' est prête !',
+            subject: 'Votre commande #'.$this->order->order_number.' est prête !',
         );
     }
 

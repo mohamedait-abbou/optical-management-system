@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Setting;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class SettingsController extends Controller
 {
@@ -75,7 +74,7 @@ class SettingsController extends Controller
                 Setting::set($key, $value);
             }
         }
-        
+
         if (isset($validated['opening_hours'])) {
             Setting::set('opening_hours', $validated['opening_hours']);
         }

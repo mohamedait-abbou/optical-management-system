@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Invoice;
 use App\Models\Order;
-use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth; // ← Ajoutez cette ligne en haut
 
 class InvoiceController extends Controller
@@ -17,10 +17,10 @@ class InvoiceController extends Controller
         $invoices = Invoice::with('order.customer')
             ->when($search, function ($query, $search) {
                 $query->where('invoice_number', 'like', "%{$search}%")
-                      ->orWhereHas('order.customer', function ($q) use ($search) {
-                          $q->where('first_name', 'like', "%{$search}%")
+                    ->orWhereHas('order.customer', function ($q) use ($search) {
+                        $q->where('first_name', 'like', "%{$search}%")
                             ->orWhere('last_name', 'like', "%{$search}%");
-                      });
+                    });
             })
             ->latest()
             ->paginate(10)
@@ -41,12 +41,12 @@ class InvoiceController extends Controller
         $totalHt = round($totalTtc / (1 + $taxRate / 100), 2);
 
         $invoice = Invoice::create([
-            'order_id'       => $order->id,
+            'order_id' => $order->id,
             'invoice_number' => Invoice::generateInvoiceNumber(),
-            'issue_date'     => now(),
-            'tax_rate'       => $taxRate,
-            'total_ht'       => $totalHt,
-            'total_ttc'      => $totalTtc,
+            'issue_date' => now(),
+            'tax_rate' => $taxRate,
+            'total_ht' => $totalHt,
+            'total_ttc' => $totalTtc,
         ]);
 
         return redirect()->route('invoices.show', $invoice)
@@ -56,6 +56,7 @@ class InvoiceController extends Controller
     public function show(Invoice $invoice)
     {
         $invoice->load('order.customer', 'order.items.product');
+
         return view('invoices.show', compact('invoice'));
     }
 
@@ -63,9 +64,10 @@ class InvoiceController extends Controller
     {
         $invoice->load('order.customer', 'order.items.product');
         $sections = view('invoices.show', compact('invoice'))->renderSections();
+
         return response()->json([
-            'title' => 'Facture ' . $invoice->invoice_number,
-            'html' => $sections['content']
+            'title' => 'Facture '.$invoice->invoice_number,
+            'html' => $sections['content'],
         ]);
     }
 
@@ -76,13 +78,13 @@ class InvoiceController extends Controller
         $pdf = Pdf::loadView('invoices.pdf', compact('invoice'))
             ->setPaper('a4');
 
-        return $pdf->download($invoice->invoice_number . '.pdf');
+        return $pdf->download($invoice->invoice_number.'.pdf');
     }
 
     public function destroy(Invoice $invoice)
     {
         // ✅ Utiliser Auth::user() au lieu de auth()->user()
-        if (!Auth::user()->hasAnyRole(['Admin', 'Manager'])) {
+        if (! Auth::user()->hasAnyRole(['Admin', 'Manager'])) {
             abort(403, 'Action non autorisée : Seuls les administrateurs et managers peuvent supprimer des factures.');
         }
 

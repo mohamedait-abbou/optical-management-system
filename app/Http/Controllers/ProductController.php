@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
-use App\Models\Category;
-use App\Models\Brand;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use App\Models\Brand;
+use App\Models\Category;
+use App\Models\Product;
 use App\Models\User;
 use App\Notifications\LowStockNotification;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -22,10 +22,10 @@ class ProductController extends Controller
             ->when($search, function ($query, $search) {
                 $query->where('name', 'like', "%{$search}%")
                       // support legacy `brand` string column while migration is pending
-                      ->orWhere('brand', 'like', "%{$search}%")
-                      ->orWhereHas('brand', function ($q) use ($search) {
-                          $q->where('name', 'like', "%{$search}%");
-                      });
+                    ->orWhere('brand', 'like', "%{$search}%")
+                    ->orWhereHas('brand', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
             })
             ->latest()
             ->paginate(10)
@@ -42,7 +42,6 @@ class ProductController extends Controller
         return view('products.create', compact('categories', 'brands'));
     }
 
-
     public function store(StoreProductRequest $request)
     {
         $validated = $request->validated();
@@ -53,12 +52,10 @@ class ProductController extends Controller
 
         Product::create($validated);
 
-        
-
-// Add this inside store() and update() methods, right before the return statement:
-if (isset($validated['quantity']) && isset($validated['alert_threshold']) && $validated['quantity'] <= $validated['alert_threshold']) {
-    User::role('Admin')->get()->each->notify(new LowStockNotification($validated['name'] ?? 'Produit', $validated['quantity']));
-}
+        // Add this inside store() and update() methods, right before the return statement:
+        if (isset($validated['quantity']) && isset($validated['alert_threshold']) && $validated['quantity'] <= $validated['alert_threshold']) {
+            User::role('Admin')->get()->each->notify(new LowStockNotification($validated['name'] ?? 'Produit', $validated['quantity']));
+        }
 
         return redirect()->route('products.index')
             ->with('success', 'Produit ajouté avec succès.');
@@ -72,9 +69,10 @@ if (isset($validated['quantity']) && isset($validated['alert_threshold']) && $va
     public function card(Product $product)
     {
         $sections = view('products.show', compact('product'))->renderSections();
+
         return response()->json([
             'title' => $product->name,
-            'html' => $sections['content']
+            'html' => $sections['content'],
         ]);
     }
 
@@ -99,8 +97,8 @@ if (isset($validated['quantity']) && isset($validated['alert_threshold']) && $va
 
         $product->update($validated);
         if (isset($validated['quantity']) && isset($validated['alert_threshold']) && $validated['quantity'] <= $validated['alert_threshold']) {
-    User::role('Admin')->get()->each->notify(new LowStockNotification($validated['name'] ?? 'Produit', $validated['quantity']));
-}
+            User::role('Admin')->get()->each->notify(new LowStockNotification($validated['name'] ?? 'Produit', $validated['quantity']));
+        }
 
         return redirect()->route('products.index')
             ->with('success', 'Produit modifié avec succès.');

@@ -1,26 +1,33 @@
 <?php
+
 namespace App\Http\Controllers;
+
+use App\Models\Product;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderItem;
 use App\Models\Supplier;
-use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class PurchaseOrderController extends Controller
 {
-    public function index() {
+    public function index()
+    {
         $orders = PurchaseOrder::with('supplier')->latest()->paginate(10);
+
         return view('purchase-orders.index', compact('orders'));
     }
 
-    public function create() {
+    public function create()
+    {
         $suppliers = Supplier::orderBy('name')->get();
         $products = Product::orderBy('name')->get();
+
         return view('purchase-orders.create', compact('suppliers', 'products'));
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $request->validate([
             'supplier_id' => 'required|exists:suppliers,id',
             'order_date' => 'required|date',
@@ -32,7 +39,7 @@ class PurchaseOrderController extends Controller
 
         $order = PurchaseOrder::create([
             'supplier_id' => $request->supplier_id,
-            'order_number' => 'PO-' . now()->format('YmdHis'),
+            'order_number' => 'PO-'.now()->format('YmdHis'),
             'order_date' => $request->order_date,
             'expected_date' => $request->expected_date,
             'status' => 'pending',
@@ -57,13 +64,16 @@ class PurchaseOrderController extends Controller
         return redirect()->route('purchase-orders.index')->with('success', 'Bon de commande créé.');
     }
 
-    public function show(PurchaseOrder $purchaseOrder) {
+    public function show(PurchaseOrder $purchaseOrder)
+    {
         $purchaseOrder->load(['supplier', 'items.product']);
+
         return view('purchase-orders.show', compact('purchaseOrder'));
     }
 
     // LA MAGIE : Réceptionner le stock
-    public function receive(PurchaseOrder $purchaseOrder) {
+    public function receive(PurchaseOrder $purchaseOrder)
+    {
         if ($purchaseOrder->status !== 'pending') {
             return back()->with('error', 'Ce bon a déjà été traité.');
         }
@@ -84,11 +94,13 @@ class PurchaseOrderController extends Controller
         return redirect()->route('purchase-orders.show', $purchaseOrder)->with('success', 'Stock réceptionné et mis à jour avec succès !');
     }
 
-    public function destroy(PurchaseOrder $purchaseOrder) {
+    public function destroy(PurchaseOrder $purchaseOrder)
+    {
         if ($purchaseOrder->status !== 'pending') {
             return back()->with('error', 'Impossible de supprimer un bon reçu.');
         }
         $purchaseOrder->delete();
+
         return redirect()->route('purchase-orders.index')->with('success', 'Bon supprimé.');
     }
 }

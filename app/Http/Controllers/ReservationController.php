@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customer;
-use App\Models\Reservation;
-use App\Models\User;
 use App\Http\Requests\StoreReservationRequest;
 use App\Http\Requests\UpdateReservationRequest;
+use App\Models\Customer;
+use App\Models\Reservation;
 use App\Notifications\NewReservationNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth; // ✅ CETTE LIGNE ÉTAIT MANQUANTE
-
 
 class ReservationController extends Controller
 {
@@ -22,7 +20,7 @@ class ReservationController extends Controller
             ->when($search, function ($query, $search) {
                 $query->whereHas('customer', function ($query) use ($search) {
                     $query->where('first_name', 'like', "%{$search}%")
-                          ->orWhere('last_name', 'like', "%{$search}%");
+                        ->orWhere('last_name', 'like', "%{$search}%");
                 })->orWhere('reason', 'like', "%{$search}%");
             })
             ->latest()
@@ -40,12 +38,12 @@ class ReservationController extends Controller
         return view('reservations.create', compact('customers', 'selectedCustomerId'));
     }
 
-        public function store(StoreReservationRequest $request)
+    public function store(StoreReservationRequest $request)
     {
         $reservation = Reservation::create($request->validated());
 
         // ✅ MODIFICATION ICI : Notifie directement l'utilisateur connecté
-        $customerName = ($reservation->customer->first_name ?? '') . ' ' . ($reservation->customer->last_name ?? '');
+        $customerName = ($reservation->customer->first_name ?? '').' '.($reservation->customer->last_name ?? '');
         Auth::user()->notify(new NewReservationNotification($customerName, $reservation->reservation_date->format('d/m/Y')));
 
         return redirect()->route('reservations.index')
@@ -60,9 +58,10 @@ class ReservationController extends Controller
     public function card(Reservation $reservation)
     {
         $sections = view('reservations.show', compact('reservation'))->renderSections();
+
         return response()->json([
-            'title' => 'Réservation du ' . $reservation->reservation_date->format('d/m/Y'),
-            'html' => $sections['content']
+            'title' => 'Réservation du '.$reservation->reservation_date->format('d/m/Y'),
+            'html' => $sections['content'],
         ]);
     }
 
@@ -119,8 +118,8 @@ class ReservationController extends Controller
 
             $events[] = [
                 'id' => $reservation->id,
-                'title' => optional($reservation->customer)->first_name . ' ' . optional($reservation->customer)->last_name,
-                'start' => $reservation->reservation_date->format('Y-m-d') . 'T' . $reservation->reservation_time,
+                'title' => optional($reservation->customer)->first_name.' '.optional($reservation->customer)->last_name,
+                'start' => $reservation->reservation_date->format('Y-m-d').'T'.$reservation->reservation_time,
                 'backgroundColor' => $color,
                 'borderColor' => $color,
                 'textColor' => '#ffffff',

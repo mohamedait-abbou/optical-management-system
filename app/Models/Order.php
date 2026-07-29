@@ -4,20 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
- use App\Models\Invoice;
-
 
 class Order extends Model
 {
+    /** Une commande de génère une seule facture (relation 1..1).
+     */
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class);
+    }
 
-/** Une commande de génère une seule facture (relation 1..1).
- */
-public function invoice()
-{
-    return $this->hasOne(Invoice::class);
-}
-
-// N'oublie pas d'ajouter en haut du fichier, avec les autres "use" :
+    // N'oublie pas d'ajouter en haut du fichier, avec les autres "use" :
 
     use HasFactory;
 

@@ -10,6 +10,7 @@ class LowStockNotification extends Notification
     use Queueable;
 
     public $productName;
+
     public $quantity;
 
     public function __construct($productName, $quantity)
@@ -29,7 +30,7 @@ class LowStockNotification extends Notification
             'message' => "⚠️ Alerte Stock: Le produit '{$this->productName}' est en rupture (Reste: {$this->quantity}).",
             'icon' => 'alert',
             'link' => route('products.index'),
-            'color' => 'rose'
+            'color' => 'rose',
         ];
     }
 }

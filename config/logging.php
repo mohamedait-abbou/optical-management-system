@@ -6,7 +6,6 @@ use Monolog\Handler\SyslogUdpHandler;
 use Monolog\Processor\PsrLogMessageProcessor;
 
 return [
-    
 
     /*
     |--------------------------------------------------------------------------
@@ -31,7 +30,6 @@ return [
     | your application ready for upcoming major versions of dependencies.
     |
     */
-
 
     'deprecations' => [
         'channel' => env('LOG_DEPRECATIONS_CHANNEL', 'null'),
