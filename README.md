@@ -270,11 +270,56 @@ The application will be available at http://127.0.0.1:8000.
 
 ## CI/CD
 
-The project uses GitHub Actions to automate the following tasks:
+The project uses GitHub Actions to automate the full pipeline:
 
-- Dependency installation
-- Laravel checks
-- Automated testing
+1. **Tests** (on a GitHub-hosted runner) — installs dependencies, builds frontend assets, runs migrations and the test suite against MySQL.
+2. **Deploy** (on a self-hosted runner) — after tests pass, deploys to the production server automatically.
+
+### Deployment flow
+
+```
+push to main ──► tests (GitHub runner) ──► deploy (self-hosted runner) ──► http://localhost:8000
+```
+
+The deploy job:
+
+- Clones/pulls the code into `/opt/optical-crm` (a dedicated directory, separate from any local checkout)
+- Builds and starts the containers from `docker-compose.prod.yml`
+- Waits for the app healthcheck (`/up`)
+- Runs `php artisan migrate --force` and `php artisan optimize`
+
+### Manual deploy (without GitHub)
+
+```bash
+cd /opt/optical-crm
+git pull origin main
+docker compose -f docker-compose.prod.yml up -d --build
+docker compose -f docker-compose.prod.yml exec app php artisan migrate --force
+```
+
+### Useful operations
+
+| Task | Command |
+| --- | --- |
+| App logs | `docker compose -f /opt/optical-crm/docker-compose.prod.yml logs -f app` |
+| Restart app | `docker compose -f /opt/optical-crm/docker-compose.prod.yml restart app` |
+| Check runner | `systemctl status actions.runner.mohamedait-abbou-optical-management-system.mhd-laptop.service` |
+| Restart runner | `sudo systemctl restart actions.runner.mohamedait-abbou-optical-management-system.mhd-laptop.service` |
+| Deploy manually (GitHub) | Actions → Laravel CI/CD → **Run workflow** |
+| Change app port | Edit `ports:` in `docker-compose.prod.yml` (e.g. `"8080:80"`) |
+
+### Key files
+
+| File | Role |
+| --- | --- |
+| `.github/workflows/laravel.yml` | CI/CD pipeline definition (tests + deploy) |
+| `Dockerfile` | Production image: PHP 8.5, Apache (docroot `public/`), Composer, Node/Vite build |
+| `docker-compose.prod.yml` | Production services: app, MySQL 8, Mailpit |
+| `/opt/optical-crm/.env` | Production secrets (never committed) |
+
+### Environment / secrets
+
+The production `.env` lives on the server at `/opt/optical-crm/.env` and is never committed. It holds the database credentials and `APP_KEY`. The APP_KEY must stay stable so sessions and encrypted data keep working — never regenerate it during updates.
 
 Workflow location: `.github/workflows/`
 
