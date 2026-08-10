@@ -4,7 +4,10 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "k6:smoke": "docker compose -f docker-compose.k6.yml run --rm k6 run /scripts/smoke-test.js",
+        "k6:load": "docker compose -f docker-compose.k6.yml run --rm k6 run /scripts/load-test.js",
+        "k6:stress": "docker compose -f docker-compose.k6.yml run --rm k6 run /scripts/stress-test.js"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'Optical CRM') }} - Authentification</title>
+    <title>Optical CRM - {{ __('Authentication') }}</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -100,7 +100,7 @@
                         </div>
                         <div>
                             <p class="text-lg font-bold bg-gradient-to-r from-cyan-300 to-fuchsia-300 bg-clip-text text-transparent">Optical CRM</p>
-                            <p class="text-xs text-slate-400">Espace d'accès sécurisé</p>
+                            <p class="text-xs text-slate-400">{{ __('Secure access area') }}</p>
                         </div>
                     </div>
                     
@@ -109,7 +109,32 @@
                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
                             <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-gradient-to-r from-cyan-400 to-fuchsia-500"></span>
                         </span>
-                        <span class="font-medium">Interface Premium</span>
+                        <span class="font-medium">{{ __('Premium Interface') }}</span>
+                    </div>
+
+                    <!-- Language Switcher -->
+                    <div class="relative" x-data="{ langOpen: false }">
+                        <button type="button" @click="langOpen = !langOpen"
+                                class="inline-flex items-center gap-2 rounded-2xl bg-slate-950/60 px-4 py-2.5 text-sm text-slate-300 shadow-inner border border-white/5 transition hover:text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                            </svg>
+                            <span class="uppercase tracking-wide">{{ app()->getLocale() }}</span>
+                        </button>
+
+                        <div x-show="langOpen" @click.away="langOpen = false" x-cloak
+                             x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95"
+                             class="absolute end-0 mt-2 w-44 origin-top-right rounded-xl bg-slate-900/95 backdrop-blur-md border border-white/10 py-1 shadow-xl z-50">
+                            <span class="block px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">{{ __('Language') }}</span>
+                            @foreach(['fr' => __('French'), 'en' => __('English'), 'ar' => __('Arabic')] as $code => $label)
+                                <a href="{{ route('language.switch', $code) }}"
+                                   class="flex items-center justify-between gap-2 px-4 py-2 text-sm transition {{ app()->getLocale() === $code ? 'bg-cyan-400/10 font-semibold text-cyan-300' : 'text-slate-200 hover:bg-white/5 hover:text-white' }}">
+                                    <span>{{ $label }}</span>
+                                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">{{ $code }}</span>
+                                </a>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
             </div>
@@ -122,7 +147,7 @@
 
         <!-- Footer -->
         <footer class="mt-8 text-center text-sm text-slate-400/80">
-            <p>© {{ date('Y') }} Optical CRM. Tous droits réservés.</p>
+            <p>© {{ date('Y') }} Optical CRM. {{ __('All rights reserved.') }}</p>
         </footer>
     </div>
 

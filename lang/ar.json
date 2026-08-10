@@ -1,0 +1,50 @@
+{
+    "Internal management": "الإدارة الداخلية",
+
+    "Language": "اللغة",
+    "French": "الفرنسية",
+    "English": "الإنجليزية",
+    "Arabic": "العربية",
+
+    "Main Menu": "القائمة الرئيسية",
+    "Dashboard": "لوحة التحكم",
+    "Reservations": "الحجوزات",
+    "Customers": "العملاء",
+    "Orders": "الطلبات",
+    "Products": "المنتجات",
+    "Suppliers": "الموردون",
+    "Purchase Orders": "أوامر الشراء",
+    "Prescriptions": "الوصفات الطبية",
+    "Categories": "الفئات",
+    "Brands": "العلامات التجارية",
+    "Reservation": "حجز",
+    "Prescription": "وصفة طبية",
+    "Administration": "الإدارة",
+    "Invoices": "الفواتير",
+    "Reports & Analytics": "التقارير والتحليلات",
+    "Users": "المستخدمون",
+    "Settings": "الإعدادات",
+    "Need help?": "هل تحتاج مساعدة؟",
+    "Contact the IT team for any internal support request.": "تواصل مع فريق تقنية المعلومات لأي طلب دعم داخلي.",
+    "Light mode": "☀️ الوضع الفاتح",
+    "Dark mode": "🌙 الوضع الداكن",
+
+    "Internal interface": "الواجهة الداخلية",
+    "Search...": "بحث...",
+    "Notifications": "الإشعارات",
+    "Mark all as read": "تحديد الكل كمقروء",
+    "No notifications.": "لا توجد إشعارات.",
+    "My profile": "ملفي الشخصي",
+    "Log out": "تسجيل الخروج",
+    "User": "مستخدم",
+
+    "Loading...": "جارٍ التحميل...",
+
+    "Searching...": "جارٍ البحث...",
+    "No results found.": "لا توجد نتائج.",
+
+    "Secure access area": "منطقة الوصول الآمن",
+    "Premium Interface": "واجهة متميزة",
+    "All rights reserved.": "جميع الحقوق محفوظة.",
+    "Authentication": "المصادقة"
+}

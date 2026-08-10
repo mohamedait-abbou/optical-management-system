@@ -81,7 +81,7 @@
                                         <a href="{{ route('customers.edit', $customer) }}" class="text-slate-600 hover:text-slate-900">Modifier</a>
                                         @endcan
                                         @can('customers.delete')
-                                        <button type="button" class="text-rose-600 hover:text-rose-700" @click="deleteId = {{ $customer->id }}; $dispatch('open-modal', { detail: 'delete-customer' })">Supprimer</button>
+                                        <button type="button" class="text-rose-600 hover:text-rose-700" @click="deleteId = {{ $customer->id }}; $dispatch('open-modal', 'delete-customer')">Supprimer</button>
                                         @endcan
                                     </div>
                     </x-card>
@@ -120,7 +120,7 @@
                                     <div class="flex flex-wrap gap-2">
                                         <button type="button" @click="$store.detailModal.openUrl('{{ route('customers.card', $customer) }}')" class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-brand-700 transition hover:bg-brand-50">Voir</button>
                                         <a href="{{ route('customers.edit', $customer) }}" class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-slate-600 transition hover:bg-slate-100">Modifier</a>
-                                        <button type="button" class="rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-sm font-medium text-rose-700 transition hover:bg-rose-100" @click="deleteId = {{ $customer->id }}; $dispatch('open-modal', { detail: 'delete-customer' })">Supprimer</button>
+                                        <button type="button" class="rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-sm font-medium text-rose-700 transition hover:bg-rose-100" @click="deleteId = {{ $customer->id }}; $dispatch('open-modal', 'delete-customer')">Supprimer</button>
                                     </div>
                                 </td>
                             </tr>
@@ -144,7 +144,7 @@
                 <form method="POST" :action="deleteId ? `/customers/${deleteId}` : '#'" class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
                     @csrf
                     @method('DELETE')
-                    <x-secondary-button type="button" @click="$dispatch('close-modal', { detail: 'delete-customer' })">Annuler</x-secondary-button>
+                    <x-secondary-button type="button" @click="$dispatch('close-modal', 'delete-customer')">Annuler</x-secondary-button>
                     <x-danger-button>Supprimer</x-danger-button>
                 </form>
             </div>

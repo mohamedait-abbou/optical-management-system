@@ -14,7 +14,7 @@
         </div>
         <div class="flex flex-wrap gap-3">
             <a href="{{ route('customers.edit', $customer) }}" class="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Modifier</a>
-            <button type="button" class="inline-flex items-center justify-center rounded-2xl bg-rose-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-rose-700" @click="$dispatch('open-modal', { detail: 'delete-customer' })">Supprimer</button>
+            <button type="button" class="inline-flex items-center justify-center rounded-2xl bg-rose-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-rose-700" @click="$dispatch('open-modal', 'delete-customer')">Supprimer</button>
         </div>
     </div>
 
@@ -89,7 +89,7 @@
         </svg>
         Historique Visuel
     </a>
-    <button type="button" @click="$dispatch('open-modal', { detail: 'notify-customer' })"
+    <button type="button" @click="$dispatch('open-modal', 'notify-customer')"
        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition hover:scale-105">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="2" y="4" width="20" height="16" rx="2"/>
@@ -120,7 +120,7 @@
                 <textarea name="message" id="message" rows="5" required class="mt-1 block w-full rounded-xl border-slate-200 bg-slate-50 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Votre message..."></textarea>
             </div>
             <div class="flex justify-end gap-3">
-                <button type="button" @click="$dispatch('close-modal', { detail: 'notify-customer' })" class="px-4 py-2 rounded-xl text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 transition">Annuler</button>
+                <button type="button" @click="$dispatch('close-modal', 'notify-customer')" class="px-4 py-2 rounded-xl text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 transition">Annuler</button>
                 <button type="submit" class="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-emerald-500 to-teal-500 hover:shadow-lg transition">Envoyer</button>
             </div>
         </form>
@@ -133,7 +133,7 @@
             <form method="POST" action="{{ route('customers.destroy', $customer) }}" class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
                 @csrf
                 @method('DELETE')
-                <x-secondary-button type="button" @click="$dispatch('close-modal', { detail: 'delete-customer' })">Annuler</x-secondary-button>
+                <x-secondary-button type="button" @click="$dispatch('close-modal', 'delete-customer')">Annuler</x-secondary-button>
                 <x-danger-button>Supprimer</x-danger-button>
             </form>
         </div>

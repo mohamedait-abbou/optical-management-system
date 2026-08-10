@@ -4,6 +4,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
@@ -19,13 +20,28 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StockMovementController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/language/{locale}', function (string $locale) {
+    if (! in_array($locale, ['fr', 'en', 'ar'])) {
+        abort(404);
+    }
+
+    session(['locale' => $locale]);
+    App::setLocale($locale);
+
+    return redirect()->back();
+})->name('language.switch');
+
 Route::middleware('auth')->group(function () {
+    // Global search (accessible à tous les utilisateurs authentifiés)
+    Route::get('/global-search', GlobalSearchController::class)->name('global-search');
+
     // Dashboard (accessible à tous)
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -141,7 +157,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [CategoryController::class, 'index'])->name('index')->middleware('role_or_permission:categories.view|Admin');
         Route::get('/create', [CategoryController::class, 'create'])->name('create')->middleware('role_or_permission:categories.create|Admin');
         Route::post('/', [CategoryController::class, 'store'])->name('store')->middleware('role_or_permission:categories.create|Admin');
-        Route::get('/{category}', [CategoryController::class, 'show'])->name('show')->middleware('role_or_permission:categories.view|Admin');
         Route::get('/{category}/edit', [CategoryController::class, 'edit'])->name('edit')->middleware('role_or_permission:categories.edit|Admin');
         Route::put('/{category}', [CategoryController::class, 'update'])->name('update')->middleware('role_or_permission:categories.edit|Admin');
         Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('destroy')->middleware('role_or_permission:categories.delete|Admin');
@@ -152,7 +167,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [SupplierController::class, 'index'])->name('index')->middleware('role_or_permission:suppliers.view|Admin');
         Route::get('/create', [SupplierController::class, 'create'])->name('create')->middleware('role_or_permission:suppliers.create|Admin');
         Route::post('/', [SupplierController::class, 'store'])->name('store')->middleware('role_or_permission:suppliers.create|Admin');
-        Route::get('/{supplier}', [SupplierController::class, 'show'])->name('show')->middleware('role_or_permission:suppliers.view|Admin');
         Route::get('/{supplier}/edit', [SupplierController::class, 'edit'])->name('edit')->middleware('role_or_permission:suppliers.edit|Admin');
         Route::put('/{supplier}', [SupplierController::class, 'update'])->name('update')->middleware('role_or_permission:suppliers.edit|Admin');
         Route::delete('/{supplier}', [SupplierController::class, 'destroy'])->name('destroy')->middleware('role_or_permission:suppliers.delete|Admin');

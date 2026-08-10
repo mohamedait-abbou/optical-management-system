@@ -1,0 +1,50 @@
+{
+    "Internal management": "Gestion interne",
+
+    "Language": "Langue",
+    "French": "Français",
+    "English": "English",
+    "Arabic": "العربية",
+
+    "Main Menu": "Menu principal",
+    "Dashboard": "Tableau de bord",
+    "Reservations": "Réservations",
+    "Customers": "Clients",
+    "Orders": "Commandes",
+    "Products": "Produits",
+    "Suppliers": "Fournisseurs",
+    "Purchase Orders": "Bons de Commande",
+    "Prescriptions": "Ordonnances",
+    "Categories": "Catégories",
+    "Brands": "Marques",
+    "Reservation": "Réservation",
+    "Prescription": "Ordonnance",
+    "Administration": "Administration",
+    "Invoices": "Factures",
+    "Reports & Analytics": "Rapports & Analyses",
+    "Users": "Utilisateurs",
+    "Settings": "Paramètres",
+    "Need help?": "Besoin d'aide ?",
+    "Contact the IT team for any internal support request.": "Contactez l'équipe IT pour toute demande de support interne.",
+    "Light mode": "☀️ Mode clair",
+    "Dark mode": "🌙 Mode sombre",
+
+    "Internal interface": "Interface interne",
+    "Search...": "Rechercher...",
+    "Notifications": "Notifications",
+    "Mark all as read": "Tout marquer lu",
+    "No notifications.": "Aucune notification.",
+    "My profile": "Mon profil",
+    "Log out": "Déconnexion",
+    "User": "Utilisateur",
+
+    "Loading...": "Chargement...",
+
+    "Searching...": "Recherche...",
+    "No results found.": "Aucun résultat trouvé.",
+
+    "Secure access area": "Espace d'accès sécurisé",
+    "Premium Interface": "Interface Premium",
+    "All rights reserved.": "Tous droits réservés.",
+    "Authentication": "Authentification"
+}

@@ -1,0 +1,50 @@
+{
+    "Internal management": "Internal management",
+
+    "Language": "Language",
+    "French": "French",
+    "English": "English",
+    "Arabic": "Arabic",
+
+    "Main Menu": "Main Menu",
+    "Dashboard": "Dashboard",
+    "Reservations": "Reservations",
+    "Customers": "Customers",
+    "Orders": "Orders",
+    "Products": "Products",
+    "Suppliers": "Suppliers",
+    "Purchase Orders": "Purchase Orders",
+    "Prescriptions": "Prescriptions",
+    "Categories": "Categories",
+    "Brands": "Brands",
+    "Reservation": "Reservation",
+    "Prescription": "Prescription",
+    "Administration": "Administration",
+    "Invoices": "Invoices",
+    "Reports & Analytics": "Reports & Analytics",
+    "Users": "Users",
+    "Settings": "Settings",
+    "Need help?": "Need help?",
+    "Contact the IT team for any internal support request.": "Contact the IT team for any internal support request.",
+    "Light mode": "☀️ Light mode",
+    "Dark mode": "🌙 Dark mode",
+
+    "Internal interface": "Internal interface",
+    "Search...": "Search...",
+    "Notifications": "Notifications",
+    "Mark all as read": "Mark all as read",
+    "No notifications.": "No notifications.",
+    "My profile": "My profile",
+    "Log out": "Log out",
+    "User": "User",
+
+    "Loading...": "Loading...",
+
+    "Searching...": "Searching...",
+    "No results found.": "No results found.",
+
+    "Secure access area": "Secure access area",
+    "Premium Interface": "Premium Interface",
+    "All rights reserved.": "All rights reserved.",
+    "Authentication": "Authentication"
+}

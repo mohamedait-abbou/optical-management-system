@@ -12,10 +12,20 @@ services:
       APP_DEBUG: false
     ports:
       - "8000:80"
-    volumes: []
+    volumes:
+      - .:/var/www/html
     depends_on:
       mysql:
         condition: service_healthy
+    networks:
+      - optical-network
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: optical-mailpit
+    restart: always
+    ports:
+      - "8025:8025"
     networks:
       - optical-network
 
