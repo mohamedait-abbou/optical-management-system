@@ -1,14 +1,73 @@
+name: crm_optical
+
 services:
+
   app:
-    deploy:
-      resources:
-        limits:
-          cpus: "1"
-          memory: 512M
+    build:
+      context: .
+    image: crm_optical-app
+    container_name: optical-crm
+    restart: always
+    env_file:
+      - .env
+    environment:
+      APP_ENV: production
+      APP_DEBUG: false
+    ports:
+      - "8000:80"
+    volumes:
+      - app_storage:/var/www/html/storage
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/up"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    networks:
+      - optical-network
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: optical-mailpit
+    restart: always
+    ports:
+      - "8025:8025"
+    networks:
+      - optical-network
 
   mysql:
-    deploy:
-      resources:
-        limits:
-          cpus: "0.5"
-          memory: 512M
+    image: mysql:8
+    container_name: optical-mysql
+    restart: always
+    env_file:
+      - .env
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-optical_crm}
+      MYSQL_USER: ${DB_USERNAME:-optical_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-optical_password}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+    ports:
+      - "127.0.0.1:3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - optical-network
+
+volumes:
+  mysql_data:
+    name: crm_optical_mysql_data
+  app_storage:
+
+networks:
+  optical-network:
+    name: optical-network
+    driver: bridge
