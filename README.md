@@ -1,8 +1,17 @@
 # Optical CRM Management System
 
-A complete customer relationship management (CRM) web application built for optical stores. It manages customers, products, prescriptions, orders, payments, invoices, and stock operations from a single modern interface.
+[![PHP](https://img.shields.io/badge/PHP-8.5-777BB4?logo=php&logoColor=white)](https://www.php.net/)
+[![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel&logoColor=white)](https://laravel.com/)
+[![MySQL](https://img.shields.io/badge/MySQL-8-4479A1?logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![Docker](https://img.shields.io/badge/Docker-✓-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![GitHub Actions](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)](https://github.com/features/actions)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-The project follows professional development practices including Docker containerization, CI/CD automation, and cloud-ready deployment.
+A complete customer relationship management (CRM) web application built for **optical stores**. It manages customers, products, prescriptions, orders, payments, invoices, and stock operations from a single modern interface — with role-based access control, PDF invoice generation, and automatic stock tracking.
+
+Built with a **professional DevOps workflow**: Docker containerization, GitHub Actions CI/CD, automated testing, and self-hosted deployment.
+
+> Demo screenshots below. The app is containerized and deployed automatically on every push to `main`.
 
 ---
 
@@ -90,9 +99,9 @@ Available roles:
 ### DevOps & Tools
 | Technology | Description |
 | --- | --- |
-| Docker & Docker Compose | Containerization |
-| GitHub Actions | CI/CD automation |
-| Microsoft Azure | Cloud deployment |
+| Docker & Docker Compose | Containerization of app, MySQL and Mailpit |
+| GitHub Actions | CI/CD automation (tests + self-hosted deploy) |
+| Self-hosted runner | Production deployment on the server |
 | Git & GitHub | Version control |
 
 ---
@@ -111,11 +120,10 @@ Available roles:
 
 ![Prescription History](screenshots/Historique_vi.png)
 
-
-
 ### Database Diagrams
 
 ![Class Diagram](screenshots/diagramme_classe.png)
+
 ![Entity-Relationship Model](screenshots/modele_entite_association.png)
 
 ---
@@ -175,7 +183,7 @@ DB_ROOT_PASSWORD=root_secret
 ### 4. Build and start the containers
 
 ```bash
-docker compose up --build
+docker compose -f docker-compose.prod.yml up --build
 ```
 
 The following services will start:
@@ -191,8 +199,8 @@ The following services will start:
 In another terminal, inside the project:
 
 ```bash
-docker compose exec app php artisan key:generate
-docker compose exec app php artisan migrate --seed
+docker compose -f docker-compose.prod.yml exec app php artisan key:generate
+docker compose -f docker-compose.prod.yml exec app php artisan migrate --seed
 ```
 
 > The application is ready. Open http://localhost:8000 in your browser.
@@ -202,13 +210,13 @@ docker compose exec app php artisan migrate --seed
 Start in the background:
 
 ```bash
-docker compose up -d
+docker compose -f docker-compose.prod.yml up -d
 ```
 
 Stop the containers:
 
 ```bash
-docker compose down
+docker compose -f docker-compose.prod.yml down
 ```
 
 Check container status:
@@ -220,7 +228,7 @@ docker ps
 View logs:
 
 ```bash
-docker compose logs -f app
+docker compose -f docker-compose.prod.yml logs -f app
 ```
 
 ---
@@ -254,16 +262,18 @@ The application will be available at http://127.0.0.1:8000.
 ## Project Structure
 
 ```
-├── app/            # Application logic (controllers, models, services)
-├── config/         # Configuration files
-├── database/       # Migrations and seeders
-├── public/         # Public assets and entry point
-├── resources/      # Views (Blade), styles and scripts
-├── routes/         # Route definitions
-├── tests/          # Automated tests
-├── screenshots/    # Project screenshots
-├── Dockerfile      # PHP/Apache container definition
-└── docker-compose.yml
+├── app/                  # Application logic (controllers, models, services)
+├── config/               # Configuration files
+├── database/             # Migrations and seeders
+├── public/               # Public assets and entry point
+├── resources/            # Views (Blade), styles and scripts
+├── routes/               # Route definitions
+├── tests/                # Automated tests (Pest)
+├── screenshots/          # Project screenshots
+├── .github/workflows/    # CI/CD pipeline (tests + deploy)
+├── Dockerfile            # Production PHP/Apache image
+├── docker-compose.yml    # Development services
+└── docker-compose.prod.yml  # Production services (deployment)
 ```
 
 ---
@@ -333,8 +343,10 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Author
 
-**Mohamed Ait Abbou**
-
-Computer Science Student
+**Mohamed Ait Abbou** — Computer Science Student & Full-Stack Developer
 
 - GitHub: [@mohamedait-abbou](https://github.com/mohamedait-abbou)
+
+---
+
+*This project is part of an internship — it demonstrates full-stack development, database design, Docker containerization, and CI/CD automation.*
