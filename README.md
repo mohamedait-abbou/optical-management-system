@@ -7,7 +7,7 @@
 [![GitHub Actions](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white)](https://github.com/features/actions)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-A complete customer relationship management (CRM) web application built for **optical stores**. It manages customers, products, prescriptions, orders, payments, invoices, and stock operations from a single modern interface — with role-based access control, PDF invoice generation, and automatic stock tracking.
+A complete customer relationship management (CRM) web application built for **optical stores**. It manages customers, products, prescriptions, orders, payments, invoices, stock operations, reservations, purchase orders, and notifications from a single modern interface — with role-based access control, PDF invoice generation, and automatic stock tracking.
 
 Built with a **professional DevOps workflow**: Docker containerization, GitHub Actions CI/CD, automated testing, and self-hosted deployment.
 
@@ -22,6 +22,7 @@ Built with a **professional DevOps workflow**: Docker containerization, GitHub A
 - [Screenshots](#screenshots)
 - [Getting Started](#getting-started)
 - [Docker Setup](#docker-setup)
+- [Local Development](#local-development)
 - [Project Structure](#project-structure)
 - [CI/CD](#cicd)
 - [License](#license)
@@ -33,49 +34,89 @@ Built with a **professional DevOps workflow**: Docker containerization, GitHub A
 
 ### Authentication & Roles
 - User registration and login
-- Profile management
+- Profile management (password, email, delete account)
 - Role-based access control using Spatie Laravel Permission
 
 Available roles:
-
-- Admin
-- Manager
-- Employee
+- **Admin** — full access
+- **Manager** — operations management
+- **Employee** — sales and customer-facing tasks
 
 ### Customer Management
 - Create, update, and delete customers
-- Search customers and CIN management
-- Customer history tracking
+- Search by name, CIN, phone, email
+- CIN (national ID) tracking
+- Full history: orders, prescriptions, payments
 
 ### Product Management
-- Products CRUD
+- Products CRUD with soft deletes
 - Categories and brands management
-- Stock tracking
+- Price, cost price, quantity, alert threshold
+- Image upload support
+- Low stock detection (`quantity <= alert_threshold`)
 
 ### Prescription Management
-- Store customer prescriptions
-- Track eye information
-- Prescription history
+- Store customer prescriptions (OD/OS sphere, cylinder, axis, PD, addition)
+- Doctor name and prescription date
+- Prescription history per customer
 
 ### Order Management
-- Create orders and manage order items
+- Create orders with multiple items
+- Auto-generates order number
+- Links customer + sales user
+- Status tracking
+- Automatic stock deduction on order creation
 - Customer order history
-- Automatic stock updates
 
 ### Payment Management
-- Track payments and payment status
-- Remaining balance calculation
-- Payment follow-up
+- Multiple payments per order
+- Tracks paid amount and remaining balance automatically
+- Payment follow-up ready
 
 ### Invoice Management
-- Generate invoices
-- Export invoices as PDF
+- One invoice per order (1:1)
+- PDF export via DomPDF
+- Print-ready layout
 - Invoice history
 
 ### Stock Management
-- Stock entries and exits
-- Stock movements history
+- Stock entries (IN) and exits (OUT) with full audit trail
+- Type, quantity, reference, notes, user tracking
+- Automatic movements on orders and purchase order receipts
+- Low stock alerts on dashboard
+
+### Purchase Orders & Suppliers
+- Supplier management
+- Multi-item purchase orders with expected dates
+- Status workflow (pending → received)
+- Receiving stock auto-updates product quantities
+
+### Reservations & Calendar
+- Appointment scheduling (date, time, reason)
+- Status workflow (pending → confirmed → completed/cancelled)
+- Customer-linked reservations
+- Calendar view via FullCalendar
+- Automated email reminders (configurable hours before via scheduled command)
+
+### Notifications
+- Real-time bell icon dropdown
 - Low stock alerts
+- Order ready notifications
+- New reservation alerts
+- Mark as read / mark all as read
+- Unread count badge
+
+### Global Search
+- Single search bar across all entities
+- Searches: customers (name/CIN/phone/email), products, orders, invoices, suppliers, prescriptions, reservations, brands, categories, purchase orders
+- Permission-aware results
+
+### Reports
+- Dashboard with 12-month sales/orders charts
+- Stock by brand visualization
+- Low stock product alerts
+- Recent activity feed (orders + prescriptions)
+- KPIs: total customers, products, brands, orders, prescriptions, total sales
 
 ---
 
@@ -93,15 +134,19 @@ Available roles:
 | --- | --- |
 | Blade | Templating engine |
 | Tailwind CSS | Styling |
-| JavaScript | Client-side logic |
+| Alpine.js | Client-side interactivity |
 | Vite | Build tool |
+| FullCalendar | Calendar/reservations UI |
 
 ### DevOps & Tools
 | Technology | Description |
 | --- | --- |
-| Docker & Docker Compose | Containerization of app, MySQL and Mailpit |
+| Docker & Docker Compose | Containerization (dev + prod) |
 | GitHub Actions | CI/CD automation (tests + self-hosted deploy) |
-| Self-hosted runner | Production deployment on the server |
+| Self-hosted runner | Production deployment on server |
+| Pest | Testing framework (unit + feature) |
+| Mailpit | Email testing in development |
+| k6 | Load testing (smoke/load/stress scripts) |
 | Git & GitHub | Version control |
 
 ---
@@ -109,21 +154,16 @@ Available roles:
 ## Screenshots
 
 ### Dashboard
-
 ![Dashboard](screenshots/dashboard.png)
 
 ### Orders
-
 ![Orders](screenshots/commandes_det.png)
 
 ### Prescription History
-
 ![Prescription History](screenshots/Historique_vi.png)
 
 ### Database Diagrams
-
 ![Class Diagram](screenshots/diagramme_classe.png)
-
 ![Entity-Relationship Model](screenshots/modele_entite_association.png)
 
 ---
@@ -132,110 +172,87 @@ Available roles:
 
 ### Prerequisites
 
-Make sure you have one of the following installed on your machine:
-
 - [Docker](https://www.docker.com/products/docker-desktop/) (recommended)
-- PHP 8.5+, Composer, Node.js and npm (local development)
+- OR PHP 8.5+, Composer, Node.js 20+, npm (local development)
 
 ---
 
-## Docker Setup (Recommended)
+## Docker Setup
 
-Docker is the quickest way to run the whole application (Laravel + MySQL + Mailpit) with a single command.
+Two compose files are provided:
+
+| File | Purpose |
+| --- | --- |
+| `docker-compose.yml` | **Development** — mounts source code for hot reload, uses `.env` |
+| `docker-compose.prod.yml` | **Production** — multi-stage build, optimized, healthchecks, no source mount |
 
 ### 1. Clone the repository
 
 ```bash
 git clone https://github.com/mohamedait-abbou/optical-management-system.git
-```
-
-> Alternative: clone from GitLab
-> ```bash
-> git clone git@gitlab.com:mohamed-ait-abbou-group/optical-crm_pro.git
-> ```
-
-### 2. Go inside the project
-
-```bash
 cd optical-management-system
 ```
 
-### 3. Configure the environment
-
-Copy the example environment file:
+### 2. Configure environment
 
 ```bash
 cp .env.example .env
 ```
 
-Set the following values for Docker:
+Edit `.env` for Docker (MySQL):
 
 ```env
+APP_ENV=production
+APP_DEBUG=false
 DB_CONNECTION=mysql
 DB_HOST=mysql
 DB_PORT=3306
 DB_DATABASE=optical_crm
 DB_USERNAME=optical_user
-DB_PASSWORD=secret
-DB_ROOT_PASSWORD=root_secret
+DB_PASSWORD=optical_password
+DB_ROOT_PASSWORD=root_password
+SESSION_DRIVER=database
+QUEUE_CONNECTION=database
+CACHE_STORE=database
+MAIL_HOST=mailpit
 ```
 
-### 4. Build and start the containers
+> The `.env.example` defaults to SQLite for zero-config local testing. For Docker, switch to MySQL as shown above.
+
+### 3. Development (with hot reload)
 
 ```bash
-docker compose -f docker-compose.prod.yml up --build
+docker compose up --build
 ```
 
-The following services will start:
-
+Services:
 | Service | URL |
 | --- | --- |
-| Laravel application | http://localhost:8000 |
-| Mailpit (email testing) | http://localhost:8025 |
+| Laravel app | http://localhost:8000 |
+| Mailpit (email UI) | http://localhost:8025 |
 | MySQL | localhost:3306 |
 
-### 5. Run migrations and seeders
-
-In another terminal, inside the project:
+Run migrations/seeders in another terminal:
 
 ```bash
+docker compose exec app php artisan key:generate
+docker compose exec app php artisan migrate --seed
+```
+
+### 4. Production
+
+```bash
+docker compose -f docker-compose.prod.yml up --build -d
 docker compose -f docker-compose.prod.yml exec app php artisan key:generate
-docker compose -f docker-compose.prod.yml exec app php artisan migrate --seed
+docker compose -f docker-compose.prod.yml exec app php artisan migrate --force
+docker compose -f docker-compose.prod.yml exec app php artisan optimize
 ```
 
-> The application is ready. Open http://localhost:8000 in your browser.
-
-### Useful Docker commands
-
-Start in the background:
-
-```bash
-docker compose -f docker-compose.prod.yml up -d
-```
-
-Stop the containers:
-
-```bash
-docker compose -f docker-compose.prod.yml down
-```
-
-Check container status:
-
-```bash
-docker ps
-```
-
-View logs:
-
-```bash
-docker compose -f docker-compose.prod.yml logs -f app
-```
+The production image uses a multi-stage Dockerfile (PHP 8.5-Apache, Node 20, Composer) with optimized autoloader, cached config/routes/views, and healthchecks.
 
 ---
 
-## Local Installation
-
-If you prefer to run the application without Docker:
+## Local Development (without Docker)
 
 ```bash
 git clone https://github.com/mohamedait-abbou/optical-management-system.git
@@ -245,8 +262,10 @@ composer install
 cp .env.example .env
 php artisan key:generate
 php artisan migrate --seed
+
 npm install
-npm run dev
+npm run build        # production assets
+# or: npm run dev    # development with Vite HMR
 ```
 
 In a second terminal:
@@ -255,25 +274,26 @@ In a second terminal:
 php artisan serve
 ```
 
-The application will be available at http://127.0.0.1:8000.
+App at http://127.0.0.1:8000. Mailpit at http://localhost:8025 (if running via Docker).
 
 ---
 
 ## Project Structure
 
 ```
-├── app/                  # Application logic (controllers, models, services)
+├── app/                  # Controllers, Models, Services, Commands, Notifications, Mail
 ├── config/               # Configuration files
-├── database/             # Migrations and seeders
-├── public/               # Public assets and entry point
-├── resources/            # Views (Blade), styles and scripts
-├── routes/               # Route definitions
-├── tests/                # Automated tests (Pest)
+├── database/             # Migrations (20+), Factories, Seeders
+├── public/               # Public assets, entry point
+├── resources/            # Views (Blade), CSS, JS
+├── routes/               # Web, API, Auth, Console routes
+├── tests/                # Pest tests (Unit + Feature)
 ├── screenshots/          # Project screenshots
 ├── .github/workflows/    # CI/CD pipeline (tests + deploy)
-├── Dockerfile            # Production PHP/Apache image
-├── docker-compose.yml    # Development services
-└── docker-compose.prod.yml  # Production services (deployment)
+├── Dockerfile            # Multi-stage production image (PHP 8.5-Apache, Node 20)
+├── docker-compose.yml    # Development services (app, MySQL, Mailpit)
+├── docker-compose.prod.yml  # Production services (optimized, healthchecks)
+└── package.json          # Frontend deps + k6 scripts
 ```
 
 ---
@@ -282,20 +302,19 @@ The application will be available at http://127.0.0.1:8000.
 
 The project uses GitHub Actions to automate the full pipeline:
 
-1. **Tests** (on a GitHub-hosted runner) — installs dependencies, builds frontend assets, runs migrations and the test suite against MySQL.
-2. **Deploy** (on a self-hosted runner) — after tests pass, deploys to the production server automatically.
+1. **Tests** (GitHub-hosted runner) — installs deps, builds assets, runs migrations, executes Pest test suite against MySQL 8.
+2. **Deploy** (self-hosted runner) — on push to `main`, after tests pass, deploys to production server automatically.
 
 ### Deployment flow
 
 ```
-push to main ──► tests (GitHub runner) ──► deploy (self-hosted runner) ──► http://localhost:8000
+push to main ──► tests (GitHub runner) ──► deploy (self-hosted runner) ──► live
 ```
 
 The deploy job:
-
-- Clones/pulls the code into `/opt/optical-crm` (a dedicated directory, separate from any local checkout)
-- Builds and starts the containers from `docker-compose.prod.yml`
-- Waits for the app healthcheck (`/up`)
+- Clones/pulls code into `/opt/optical-crm`
+- Builds and starts containers from `docker-compose.prod.yml`
+- Waits for app healthcheck (`/up`)
 - Runs `php artisan migrate --force` and `php artisan optimize`
 
 ### Manual deploy (without GitHub)
@@ -305,6 +324,7 @@ cd /opt/optical-crm
 git pull origin main
 docker compose -f docker-compose.prod.yml up -d --build
 docker compose -f docker-compose.prod.yml exec app php artisan migrate --force
+docker compose -f docker-compose.prod.yml exec app php artisan optimize
 ```
 
 ### Useful operations
@@ -329,7 +349,7 @@ docker compose -f docker-compose.prod.yml exec app php artisan migrate --force
 
 ### Environment / secrets
 
-The production `.env` lives on the server at `/opt/optical-crm/.env` and is never committed. It holds the database credentials and `APP_KEY`. The APP_KEY must stay stable so sessions and encrypted data keep working — never regenerate it during updates.
+The production `.env` lives on the server at `/opt/optical-crm/.env` and is never committed. It holds the database credentials and `APP_KEY`. The `APP_KEY` must stay stable so sessions and encrypted data keep working — never regenerate it during updates.
 
 Workflow location: `.github/workflows/`
 
@@ -349,4 +369,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-*This project is part of an internship — it demonstrates full-stack development, database design, Docker containerization, and CI/CD automation.*
+*This project was built during an internship — it demonstrates full-stack development, database design, Docker containerization, CI/CD automation, and domain modeling for a real-world optical business.*
